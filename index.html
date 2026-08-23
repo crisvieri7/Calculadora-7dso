@@ -49,7 +49,6 @@
       text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     }
 
-    /* Imagen principal de bienvenida más grande y mejor centrada */
     .splash-image-container {
       width: 220px;
       height: 220px;
@@ -242,7 +241,9 @@
     .panel-title.act { color: #8c93a8; }
     .panel-title.nue { color: #ffb74d; }
     .center-divider { text-align: center; color: #4a5064; font-size: 1rem; }
+    
     .stat-box { display: flex; flex-direction: column; gap: 3px; }
+    
     select {
       background: rgba(0, 0, 0, 0.8);
       border: 1px solid rgba(255, 255, 255, 0.15);
@@ -253,12 +254,13 @@
       outline: none;
       width: 100%;
     }
+
     input.stat-input {
       background: rgba(0, 0, 0, 0.4);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 5px;
       color: #ffffff;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 600;
       padding: 4px;
       text-align: right;
@@ -269,6 +271,14 @@
       border-color: rgba(255, 152, 0, 0.4);
       background: rgba(255, 152, 0, 0.08);
     }
+
+    .roll-quality {
+      font-size: 0.58rem;
+      color: #a0aabf;
+      text-align: right;
+      font-weight: bold;
+    }
+
     .action-buttons { display: flex; gap: 8px; margin-top: 14px; }
     .btn-calc {
       flex: 2;
@@ -359,16 +369,32 @@
 
       <!-- EVALUADOR DE ENCANTAMIENTOS -->
       <div class="calc-card">
-        <div class="section-title">Evaluador de Encantamientos (Orbe / Pieza)</div>
+        <div class="section-title">Evaluador de Encantamientos (Orbe de Fuego)</div>
 
         <div class="comparison-container">
           <!-- ACTUAL -->
           <div class="column-panel">
             <div class="panel-title act">Roll Actual</div>
-            <div class="stat-box"><select id="s1_act"></select><input type="number" step="0.01" class="stat-input" id="act1" value="13.53"></div>
-            <div class="stat-box"><select id="s2_act"></select><input type="number" step="0.01" class="stat-input" id="act2" value="33.76"></div>
-            <div class="stat-box"><select id="s3_act"></select><input type="number" step="0.01" class="stat-input" id="act3" value="8.95"></div>
-            <div class="stat-box"><select id="s4_act"></select><input type="number" step="0.01" class="stat-input" id="act4" value="23.34"></div>
+            <div class="stat-box">
+              <select id="s1_act" onchange="actualizarPorcentajes()"></select>
+              <input type="number" step="0.01" class="stat-input" id="act1" value="13.53" oninput="actualizarPorcentajes()">
+              <div class="roll-quality" id="q_act1">Calidad: --%</div>
+            </div>
+            <div class="stat-box">
+              <select id="s2_act" onchange="actualizarPorcentajes()"></select>
+              <input type="number" step="0.01" class="stat-input" id="act2" value="33.76" oninput="actualizarPorcentajes()">
+              <div class="roll-quality" id="q_act2">Calidad: --%</div>
+            </div>
+            <div class="stat-box">
+              <select id="s3_act" onchange="actualizarPorcentajes()"></select>
+              <input type="number" step="0.01" class="stat-input" id="act3" value="8.95" oninput="actualizarPorcentajes()">
+              <div class="roll-quality" id="q_act3">Calidad: --%</div>
+            </div>
+            <div class="stat-box">
+              <select id="s4_act" onchange="actualizarPorcentajes()"></select>
+              <input type="number" step="0.01" class="stat-input" id="act4" value="23.34" oninput="actualizarPorcentajes()">
+              <div class="roll-quality" id="q_act4">Calidad: --%</div>
+            </div>
           </div>
 
           <div class="center-divider">➔</div>
@@ -376,10 +402,26 @@
           <!-- NUEVO -->
           <div class="column-panel">
             <div class="panel-title nue">Nuevo Roll (Orbe)</div>
-            <div class="stat-box"><select id="s1_nue"></select><input type="number" step="0.01" class="stat-input new-value" id="nue1" value="13.53"></div>
-            <div class="stat-box"><select id="s2_nue"></select><input type="number" step="0.01" class="stat-input new-value" id="nue2" value="33.76"></div>
-            <div class="stat-box"><select id="s3_nue"></select><input type="number" step="0.01" class="stat-input new-value" id="nue3" value="12.00"></div>
-            <div class="stat-box"><select id="s4_nue"></select><input type="number" step="0.01" class="stat-input new-value" id="nue4" value="23.34"></div>
+            <div class="stat-box">
+              <select id="s1_nue" onchange="actualizarPorcentajes()"></select>
+              <input type="number" step="0.01" class="stat-input new-value" id="nue1" value="13.53" oninput="actualizarPorcentajes()">
+              <div class="roll-quality" id="q_nue1">Calidad: --%</div>
+            </div>
+            <div class="stat-box">
+              <select id="s2_nue" onchange="actualizarPorcentajes()"></select>
+              <input type="number" step="0.01" class="stat-input new-value" id="nue2" value="33.76" oninput="actualizarPorcentajes()">
+              <div class="roll-quality" id="q_nue2">Calidad: --%</div>
+            </div>
+            <div class="stat-box">
+              <select id="s3_nue" onchange="actualizarPorcentajes()"></select>
+              <input type="number" step="0.01" class="stat-input new-value" id="nue3" value="12.00" oninput="actualizarPorcentajes()">
+              <div class="roll-quality" id="q_nue3">Calidad: --%</div>
+            </div>
+            <div class="stat-box">
+              <select id="s4_nue" onchange="actualizarPorcentajes()"></select>
+              <input type="number" step="0.01" class="stat-input new-value" id="nue4" value="23.34" oninput="actualizarPorcentajes()">
+              <div class="roll-quality" id="q_nue4">Calidad: --%</div>
+            </div>
           </div>
         </div>
 
@@ -407,6 +449,7 @@
     setTimeout(() => {
       splash.style.display = 'none';
       mainApp.style.display = 'flex';
+      actualizarPorcentajes();
     }, 400);
   }
 
@@ -417,17 +460,56 @@
     atkFuego: 0.80,
     dmgEspecial: 0.85,
     dmgDef: 0.75,
-    cargaMagica: 0.20
+    cargaMagica: 0.20,
+    defensa: 0.60,
+    ps: 0.60,
+    dmgNormal: 0.80,
+    dmgHabNormal: 0.75,
+    dmgRelevo: 0.85,
+    dmgDefinitiva: 0.90,
+    cdr: 0.70,
+    resCrit: 0.65,
+    defCrit: 0.65,
+    rafagaFuego: 1.00
+  };
+
+  // Rangos exactos extraídos de tus capturas de la orbe de tipo fuego
+  const rangosStats = {
+    defensa: { min: 3.40, max: 5.71 },
+    ps: { min: 2.49, max: 4.17 },
+    dmgNormal: { min: 18.56, max: 30.95 },
+    dmgEspecial: { min: 16.90, max: 28.17 },
+    dmgHabNormal: { min: 13.01, max: 21.69 },
+    dmgRelevo: { min: 22.86, max: 38.12 },
+    dmgDefinitiva: { min: 10.19, max: 16.98 },
+    cdr: { min: 6.71, max: 11.19 },
+    cargaMagica: { min: 8.95, max: 14.97 },
+    probCrit: { min: 6.05, max: 10.11 },
+    resCrit: { min: 6.05, max: 10.11 },
+    dmgCrit: { min: 10.69, max: 17.83 },
+    defCrit: { min: 10.69, max: 17.83 },
+    atkFuego: { min: 26.26, max: 43.76 },
+    dmgFuego: { min: 11.35, max: 18.98 },
+    rafagaFuego: { min: 11.19, max: 18.68 }
   };
 
   const opciones = [
-    { value: 'dmgFuego', text: 'Aumento de daño de tipo Fuego' },
-    { value: 'atkFuego', text: 'Aumento de ataque de tipo Fuego' },
-    { value: 'probCrit', text: 'Probabilidad Crítica %' },
-    { value: 'dmgCrit', text: 'Daño Crítico %' },
-    { value: 'dmgEspecial', text: 'Aumento de daño de ataque especial' },
-    { value: 'dmgDef', text: 'Aumento de daño de definitiva' },
-    { value: 'cargaMagica', text: 'Eficiencia de carga mágica' }
+    { value: 'dmgFuego', text: 'Aumento del daño de tipo Fuego (+11.35% ~ 18.98%)' },
+    { value: 'atkFuego', text: 'Aumento del ataque de tipo Fuego (+26.26% ~ 43.76%)' },
+    { value: 'rafagaFuego', text: 'Eficacia de las Ráfagas de fuego (+11.19% ~ 18.68%)' },
+    { value: 'probCrit', text: 'Probabilidad de crítico (+6.05% ~ 10.11%)' },
+    { value: 'dmgCrit', text: 'Daño crítico (+10.69% ~ 17.83%)' },
+    { value: 'dmgEspecial', text: 'Aumento del daño de ataques especiales (+16.90% ~ 28.17%)' },
+    { value: 'dmgDefinitiva', text: 'Aumento del daño de movimientos definitivos (+10.19% ~ 16.98%)' },
+    { value: 'dmgRelevo', text: 'Aumento del daño de habilidades de relevo (+22.86% ~ 38.12%)' },
+    { value: 'cargaMagica', text: 'Eficacia de la carga mágica (+8.95% ~ 14.97%)' },
+    { value: 'dmgNormal', text: 'Aumento del daño de ataques normales (+18.56% ~ 30.95%)' },
+    { value: 'dmgHabNormal', text: 'Aumento del daño de habilidades normales (+13.01% ~ 21.69%)' },
+    { value: 'cdr', text: 'Reducción del tiempo de recuperación (+6.71% ~ 11.19%)' },
+    { value: 'defensa', text: 'Aumento de la defensa (+3.40% ~ 5.71%)' },
+    { value: 'ps', text: 'Aumento de los PS (+2.49% ~ 4.17%)' },
+    { value: 'resCrit', text: 'Resistencia crítica (+6.05% ~ 10.11%)' },
+    { value: 'defCrit', text: 'Defensa crítica (+10.69% ~ 17.83%)' }
   ];
 
   function init() {
@@ -451,17 +533,58 @@
     document.getElementById('s2_nue').value = 'atkFuego';
     document.getElementById('s3_nue').value = 'probCrit';
     document.getElementById('s4_nue').value = 'dmgEspecial';
+    
+    actualizarPorcentajes();
+  }
+
+  function calcularPorcentajeStat(tipo, valor) {
+    const rango = rangosStats[tipo];
+    if (!rango) return 0;
+    let pct = ((valor - rango.min) / (rango.max - rango.min)) * 100;
+    if (pct < 0) pct = 0;
+    if (pct > 100) pct = 100;
+    return pct.toFixed(0);
+  }
+
+  function actualizarPorcentajes() {
+    ['act', 'nue'].forEach(tipoPanel => {
+      for (let i = 1; i <= 4; i++) {
+        const statTipo = document.getElementById(`s${i}_${tipoPanel}`).value;
+        const statVal = parseFloat(document.getElementById(`${tipoPanel}${i}`).value) || 0;
+        const pct = calcularPorcentajeStat(statTipo, statVal);
+        
+        const etiqueta = document.getElementById(`q_${tipoPanel}${i}`);
+        etiqueta.innerText = `Calidad: ${pct}%`;
+
+        if (pct >= 85) {
+          etiqueta.style.color = '#4caf50'; // God Roll (Verde)
+        } else if (pct >= 50) {
+          etiqueta.style.color = '#ffb74d'; // Bueno (Amarillo)
+        } else {
+          etiqueta.style.color = '#e57373'; // Bajo (Rojo)
+        }
+      }
+    });
   }
 
   function detectarTipoStat(lineaTexto) {
     const t = lineaTexto.toLowerCase();
-    if (t.includes('crit') && (t.includes('dmg') || t.includes('daño') || t.includes('damage'))) return 'dmgCrit';
-    if (t.includes('crit') && (t.includes('prob') || t.includes('rate'))) return 'probCrit';
-    if (t.includes('fuego') && (t.includes('atk') || t.includes('ataque'))) return 'atkFuego';
-    if (t.includes('fuego') && (t.includes('dmg') || t.includes('daño'))) return 'dmgFuego';
-    if (t.includes('especial') || t.includes('special')) return 'dmgEspecial';
-    if (t.includes('definitiva') || t.includes('ultimate')) return 'dmgDef';
-    if (t.includes('magica') || t.includes('magic') || t.includes('carga')) return 'cargaMagica';
+    if (t.includes('fuego') && t.includes('ataque')) return 'atkFuego';
+    if (t.includes('fuego') && t.includes('daño')) return 'dmgFuego';
+    if (t.includes('ráfagas') || t.includes('rafagas')) return 'rafagaFuego';
+    if (t.includes('probabilidad') && t.includes('crítico')) return 'probCrit';
+    if (t.includes('daño crítico') || t.includes('dano critico')) return 'dmgCrit';
+    if (t.includes('especial')) return 'dmgEspecial';
+    if (t.includes('definitiva')) return 'dmgDefinitiva';
+    if (t.includes('relevo')) return 'dmgRelevo';
+    if (t.includes('carga mágica') || t.includes('carga magica')) return 'cargaMagica';
+    if (t.includes('normales') && t.includes('ataques')) return 'dmgNormal';
+    if (t.includes('normales') && t.includes('habilidades')) return 'dmgHabNormal';
+    if (t.includes('recuperación') || t.includes('recuperacion')) return 'cdr';
+    if (t.includes('defensa') && !t.includes('crítica')) return 'defensa';
+    if (t.includes('ps')) return 'ps';
+    if (t.includes('resistencia crítica')) return 'resCrit';
+    if (t.includes('defensa crítica')) return 'defCrit';
     return null;
   }
 
@@ -496,15 +619,17 @@
         }
       });
 
+      actualizarPorcentajes();
+
       if (statIndex > 1) {
-        alert("¡Captura de orbe analizada! Se ajustaron los tipos y valores del Roll Actual.");
+        alert("¡Captura analizada con éxito! Se cargaron los rangos de la orbe de fuego.");
       } else {
         alert("No se pudieron extraer datos legibles. Intenta con una imagen más clara.");
       }
     }).catch(err => {
       loadingText.style.display = 'none';
       console.error(err);
-      alert("Error al procesar la imagen de la orbe.");
+      alert("Error al procesar la imagen.");
     });
   }
 
@@ -513,6 +638,7 @@
       document.getElementById(`s${i}_nue`).value = document.getElementById(`s${i}_act`).value;
       document.getElementById(`nue${i}`).value = document.getElementById(`act${i}`).value;
     }
+    actualizarPorcentajes();
   }
 
   function calcular() {
