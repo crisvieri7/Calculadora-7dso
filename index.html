@@ -64,7 +64,7 @@
     .splash-image-container img {
       width: 100%;
       height: 100%;
-      object-fit: contain; /* Esto asegura que se vea toda la imagen completa sin recortar nada */
+      object-fit: contain;
     }
 
     .btn-enter {
@@ -158,7 +158,7 @@
     .hero-avatar img {
       width: 100%;
       height: 100%;
-      object-fit: cover; /* Aquí en miniatura sí luce bien en 'cover' para llenar el espacio */
+      object-fit: cover;
     }
 
     .hero-base-stats {
@@ -189,11 +189,17 @@
       outline: none;
     }
 
+    .footer-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
     .creator-credit {
-      text-align: right;
       font-size: 0.65rem;
       color: #6c757d;
-      margin-top: 10px;
       font-style: italic;
     }
 
@@ -269,14 +275,14 @@
       font-weight: bold;
     }
 
-    .action-buttons { display: flex; gap: 8px; margin-top: 14px; }
+    .action-buttons { display: flex; gap: 6px; margin-top: 14px; }
     .btn-calc {
-      flex: 2;
+      flex: 1.5;
       background: #e65100;
       color: white;
       border: none;
-      padding: 12px;
-      font-size: 0.85rem;
+      padding: 10px 6px;
+      font-size: 0.78rem;
       font-weight: bold;
       border-radius: 6px;
       cursor: pointer;
@@ -286,12 +292,28 @@
       background: #232733;
       color: #8c93a8;
       border: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 12px;
-      font-size: 0.72rem;
+      padding: 10px 6px;
+      font-size: 0.68rem;
       font-weight: 600;
       border-radius: 6px;
       cursor: pointer;
     }
+    .btn-apply {
+      flex: 1.2;
+      background: #2e6d3e;
+      color: #fff;
+      border: none;
+      padding: 10px 6px;
+      font-size: 0.72rem;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      display: none; /* Se muestra solo al evaluar una mejora */
+    }
+    .btn-apply:hover {
+      background: #388e3c;
+    }
+
     .result-box {
       margin-top: 12px;
       padding: 10px;
@@ -351,7 +373,10 @@
             </div>
           </div>
         </div>
-        <div class="creator-credit">Made by Christenzen</div>
+        
+        <div class="footer-info">
+          <div class="creator-credit">Made by Christenzen</div>
+        </div>
       </div>
 
       <!-- EVALUADOR DE ENCANTAMIENTOS -->
@@ -413,8 +438,9 @@
         </div>
 
         <div class="action-buttons">
-          <button type="button" class="btn-reset" onclick="copiarActual()">Copiar Actual</button>
-          <button type="button" class="btn-calc" onclick="calcular()">Evaluar Orbe</button>
+          <button type="button" class="btn-reset" onclick="copiarActualParaNuevo()">Copiar Actual</button>
+          <button type="button" class="btn-calc" onclick="calcular()">Evaluar</button>
+          <button type="button" id="btnAplicar" class="btn-apply" onclick="mantenerYCambiar()">✓ Mantener</button>
         </div>
 
         <div id="resultado" class="result-box">
@@ -553,12 +579,44 @@
     });
   }
 
-  function copiarActual() {
+  function copiarActualParaNuevo() {
     for (let i = 1; i <= 4; i++) {
       document.getElementById(`s${i}_nue`).value = document.getElementById(`s${i}_act`).value;
       document.getElementById(`nue${i}`).value = document.getElementById(`act${i}`).value;
     }
     actualizarPorcentajes();
+  }
+
+  // NUEVA FUNCIÓN: Mover los datos del nuevo roll directamente al panel actual
+  function mantenerYCambiar() {
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById(`s${i}_act`).value = document.getElementById(`s${i}_nue`).value;
+      document.getElementById(`act${i}`).value = document.getElementById(`nue${i}`).value;
+    }
+
+    // Actualizar también el CP y el Ataque Base de la tarjeta de Escanor con los estimados de la mejora
+    let cpEst = document.getElementById('btnAplicar').getAttribute('data-cp');
+    let atqEst = document.getElementById('btnAplicar').getAttribute('data-atq');
+    
+    if(cpEst) document.getElementById('baseCP').value = cpEst;
+    if(atqEst) document.getElementById('baseAtqFuego').value = atqEst;
+
+    actualizarPorcentajes();
+
+    // Ocultar botón y mostrar aviso de éxito
+    document.getElementById('btnAplicar').style.display = 'none';
+    const resBox = document.getElementById('resultado');
+    const resTitle = document.getElementById('tituloResultado');
+    const resText = document.getElementById('textoResultado');
+    const resNota = document.getElementById('notaEscanor');
+
+    resBox.style.backgroundColor = '#112919';
+    resBox.style.border = '1px solid #2e6d3e';
+    resTitle.style.color = '#4caf50';
+    resTitle.innerText = '¡ESTADÍSTICAS ACTUALIZADAS!';
+    resText.style.color = '#81c784';
+    resText.innerText = 'El nuevo roll ahora es tu base actual.';
+    resNota.innerHTML = 'Tus atributos principales se han incrementado automáticamente.';
   }
 
   function calcular() {
@@ -587,6 +645,7 @@
     const resTitle = document.getElementById('tituloResultado');
     const resText = document.getElementById('textoResultado');
     const resNota = document.getElementById('notaEscanor');
+    const btnAplicar = document.getElementById('btnAplicar');
 
     resBox.style.display = 'block';
 
@@ -598,24 +657,33 @@
       resText.style.color = '#81c784';
       resText.innerText = `Rendimiento de Orbe: +${porcentajeCambio}%`;
       resNota.style.color = '#a5d6a7';
-      resNota.innerHTML = `Al cambiarla, tu equipo mejorará:<br><b>• CP Estimado:</b> ${cpBase} ➔ <b>${nuevoCPestimado}</b><br><b>• Atq. Fuego:</b> ${atqBase}% ➔ <b>${nuevoAtqEstimado}%</b><br>¡Excelente mejora hacia tu meta de 140k!`;
-    } else if (difPuntaje === 0) {
-      resBox.style.backgroundColor = '#212631';
-      resBox.style.border = '1px solid #4f5b75';
-      resTitle.style.color = '#90caf9';
-      resTitle.innerText = 'ORBE EQUIVALENTE';
-      resText.style.color = '#e3f2fd';
-      resText.innerText = 'El impacto de combate es idéntico.';
-      resNota.innerHTML = 'Tus estadísticas globales no sufrirán cambios significativos.';
+      resNota.innerHTML = `Al cambiarla, tu equipo mejorará:<br><b>• CP Estimado:</b> ${cpBase} ➔ <b>${nuevoCPestimado}</b><br><b>• Atq. Fuego:</b> ${atqBase}% ➔ <b>${nuevoAtqEstimado}%</b><br>¡Haz clic en "Mantener" para guardar los cambios!`;
+
+      // Guardar datos temporales en el botón y mostrarlo
+      btnAplicar.setAttribute('data-cp', nuevoCPestimado);
+      btnAplicar.setAttribute('data-atq', nuevoAtqEstimado);
+      btnAplicar.style.display = 'block';
+
     } else {
-      resBox.style.backgroundColor = '#2d1414';
-      resBox.style.border = '1px solid #6d2e2e';
-      resTitle.style.color = '#e57373';
-      resTitle.innerText = '✕ NO CAMBIAR (DESCARTAR ORBE)';
-      resText.style.color = '#ef9a9a';
-      resText.innerText = `Pérdida de rendimiento: ${porcentajeCambio}%`;
-      resNota.style.color = '#ffab91';
-      resNota.innerHTML = `Al cambiarla perderías efectividad:<br><b>• CP Proyectado bajaría a:</b> ~${nuevoCPestimado}<br>Quédate con tu orbe actual para no alejarte de tu meta.`;
+      btnAplicar.style.display = 'none';
+      if (difPuntaje === 0) {
+        resBox.style.backgroundColor = '#212631';
+        resBox.style.border = '1px solid #4f5b75';
+        resTitle.style.color = '#90caf9';
+        resTitle.innerText = 'ORBE EQUIVALENTE';
+        resText.style.color = '#e3f2fd';
+        resText.innerText = 'El impacto de combate es idéntico.';
+        resNota.innerHTML = 'Tus estadísticas globales no sufrirán cambios significativos.';
+      } else {
+        resBox.style.backgroundColor = '#2d1414';
+        resBox.style.border = '1px solid #6d2e2e';
+        resTitle.style.color = '#e57373';
+        resTitle.innerText = '✕ NO CAMBIAR (DESCARTAR ORBE)';
+        resText.style.color = '#ef9a9a';
+        resText.innerText = `Pérdida de rendimiento: ${porcentajeCambio}%`;
+        resNota.style.color = '#ffab91';
+        resNota.innerHTML = `Al cambiarla perderías efectividad:<br><b>• CP Proyectado bajaría a:</b> ~${nuevoCPestimado}<br>Quédate con tu orbe actual para no alejarte de tu meta.`;
+      }
     }
   }
 
