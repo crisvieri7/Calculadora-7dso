@@ -18,14 +18,13 @@
       overflow-x: hidden;
     }
 
-    /* CONTENEDOR GENERAL */
     .app-container {
       width: 100%;
       max-width: 480px;
       position: relative;
     }
 
-    /* PANTALLA 1: BIENVENIDA / SPLASH (IMAGEN CENTRADA + BOTÓN ENTER) */
+    /* PANTALLA 1: SPLASH (IMAGEN CENTRADA + BOTÓN ENTER) */
     #splashScreen {
       display: flex;
       flex-direction: column;
@@ -82,7 +81,7 @@
       box-shadow: 0 6px 20px rgba(230, 81, 0, 0.6);
     }
 
-    /* PANTALLA 2: LA APLICACIÓN PRINCIPAL (OCULTA AL INICIO) */
+    /* PANTALLA 2: APLICACIÓN PRINCIPAL (OCULTA AL INICIO) */
     #mainApp {
       display: none;
       flex-direction: column;
@@ -95,7 +94,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* TARJETA DE PERFIL DE HÉROE */
+    /* TARJETA DE PERFIL EDITABLE */
     .hero-card {
       background: rgba(16, 18, 26, 0.95);
       border: 1px solid rgba(255, 152, 0, 0.3);
@@ -111,18 +110,37 @@
       padding-bottom: 8px;
       margin-bottom: 12px;
     }
-    .hero-title { font-size: 1.1rem; font-weight: 800; color: #ffb74d; }
-    .hero-cp { font-size: 0.85rem; color: #8c93a8; font-weight: bold; }
-    .hero-cp span { color: #fff; font-size: 1.05rem; }
+    .hero-title { font-size: 1.05rem; font-weight: 800; color: #ffb74d; }
+    
+    .cp-box {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.8rem;
+      color: #8c93a8;
+      font-weight: bold;
+    }
+    .cp-input {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 152, 0, 0.4);
+      border-radius: 5px;
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: bold;
+      padding: 2px 6px;
+      width: 85px;
+      text-align: right;
+      outline: none;
+    }
 
     .hero-profile {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
     }
     .hero-avatar {
-      width: 75px;
-      height: 75px;
+      width: 70px;
+      height: 70px;
       border-radius: 50%;
       border: 2px solid #ff9800;
       background: #281a08 url('IMG_2253.jpeg') center/cover no-repeat;
@@ -134,18 +152,30 @@
       grid-template-columns: 1fr 1fr;
       gap: 6px;
       width: 100%;
-      font-size: 0.72rem;
     }
     .stat-pill {
       background: rgba(255, 255, 255, 0.04);
-      padding: 6px 8px;
+      padding: 5px 6px;
       border-radius: 6px;
       border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
-    .stat-pill label { display: block; color: #8c93a8; font-size: 0.65rem; }
-    .stat-pill val { font-weight: bold; color: #ffcc80; }
+    .stat-pill label { color: #8c93a8; font-size: 0.6rem; }
+    .hero-stat-input {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      color: #ffcc80;
+      font-size: 0.8rem;
+      font-weight: bold;
+      padding: 2px 4px;
+      width: 100%;
+      outline: none;
+    }
 
-    /* TARJETA DE EVALUACIÓN DE ENCANTAMIENTO */
+    /* TARJETA EVALUADOR */
     .calc-card {
       background: rgba(16, 18, 26, 0.95);
       border: 1px solid rgba(230, 81, 0, 0.3);
@@ -185,7 +215,7 @@
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 5px;
       color: #d1d5e0;
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       padding: 4px 2px;
       outline: none;
       width: 100%;
@@ -245,7 +275,7 @@
 
   <div class="app-container">
     
-    <!-- ================= PANTALLA 1: BIENVENIDA / ENTER ================= -->
+    <!-- PANTALLA 1: SPLASH (IMAGEN CENTRADA Y BOTÓN ENTER) -->
     <div id="splashScreen">
       <div class="splash-title">🔥 Calculadora Escanor 7DS</div>
       <div class="splash-image-container">
@@ -254,27 +284,41 @@
       <button type="button" class="btn-enter" onclick="entrarApp()">ENTER</button>
     </div>
 
-    <!-- ================= PANTALLA 2: APLICACIÓN PRINCIPAL ================= -->
+    <!-- PANTALLA 2: APLICACIÓN PRINCIPAL -->
     <div id="mainApp">
       
-      <!-- Tarjeta de Perfil de Héroe -->
+      <!-- PERFIL EDITABLE -->
       <div class="hero-card">
         <div class="hero-header">
-          <div class="hero-title">Escanor (Rango IV)</div>
-          <div class="hero-cp">Poder: <span>37,188</span></div>
+          <div class="hero-title">Escanor (Personalizado)</div>
+          <div class="cp-box">
+            Poder: <input type="number" id="baseCP" class="cp-input" value="37188">
+          </div>
         </div>
         <div class="hero-profile">
           <div class="hero-avatar"></div>
           <div class="hero-base-stats">
-            <div class="stat-pill"><label>Atq Fuego %</label><val>99.08%</val></div>
-            <div class="stat-pill"><label>Daño Fuego %</label><val>13.53%</val></div>
-            <div class="stat-pill"><label>Prob. Crítica</label><val>33.76%</val></div>
-            <div class="stat-pill"><label>Daño Crítico</label><val>113.51%</val></div>
+            <div class="stat-pill">
+              <label>Atq Fuego %</label>
+              <input type="number" step="0.01" id="baseAtqFuego" class="hero-stat-input" value="99.08">
+            </div>
+            <div class="stat-pill">
+              <label>Daño Fuego %</label>
+              <input type="number" step="0.01" id="baseDmgFuego" class="hero-stat-input" value="13.53">
+            </div>
+            <div class="stat-pill">
+              <label>Prob. Crítica</label>
+              <input type="number" step="0.01" id="baseProbCrit" class="hero-stat-input" value="33.76">
+            </div>
+            <div class="stat-pill">
+              <label>Daño Crítico</label>
+              <input type="number" step="0.01" id="baseDmgCrit" class="hero-stat-input" value="113.51">
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Tarjeta Evaluador de Encantamientos -->
+      <!-- EVALUADOR DE ENCANTAMIENTOS -->
       <div class="calc-card">
         <div class="section-title">Evaluador de Encantamiento (Hacha)</div>
 
@@ -320,7 +364,6 @@
   function entrarApp() {
     const splash = document.getElementById('splashScreen');
     const mainApp = document.getElementById('mainApp');
-    
     splash.style.opacity = '0';
     setTimeout(() => {
       splash.style.display = 'none';
