@@ -13,18 +13,83 @@
 
     body {
       background-color: #0f0f11;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* PANTALLA DE BIENVENIDA (LANDING) */
+    #welcome-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #0d0d0f;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .welcome-img-container {
+      max-width: 90%;
+      max-height: 65vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    .welcome-img-container img {
+      width: 100%;
+      height: 100%;
+      max-height: 60vh;
+      object-fit: contain;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    }
+
+    .btn-start {
+      background-color: #e65100;
+      color: white;
+      border: none;
+      padding: 16px 40px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-radius: 30px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 20px rgba(230, 81, 0, 0.5);
+      transition: transform 0.2s, background-color 0.2s;
+    }
+
+    .btn-start:active {
+      transform: scale(0.95);
+      background-color: #f57c00;
+    }
+
+    /* CONTENEDOR DE LA CALCULADORA */
+    #app-screen {
+      display: none;
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .app-bg {
       background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), 
                         url('IMG_2226.jpeg');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
-      color: #ffffff;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 20px;
     }
 
     .card {
@@ -33,7 +98,6 @@
       border-radius: 12px;
       padding: 20px;
       width: 100%;
-      max-width: 440px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
       backdrop-filter: blur(8px);
     }
@@ -112,6 +176,11 @@
       margin-top: 16px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      transition: background-color 0.2s;
+    }
+
+    .btn-calc:active {
+      background-color: #f57c00;
     }
 
     .result-box {
@@ -148,159 +217,175 @@
 </head>
 <body>
 
-<div class="card">
-  <div class="title">🔥 7DS: Origin - Estimador de Orbe</div>
-
-  <div class="input-group">
-    <label for="cpActual">Poder de Equipo Actual (CP)</label>
-    <input type="number" inputmode="decimal" id="cpActual" value="138503">
+  <!-- PANTALLA DE INICIO (PORTADA) -->
+  <div id="welcome-screen">
+    <div class="welcome-img-container">
+      <img src="IMG_2226.jpeg" alt="Ban - 7DS Origin">
+    </div>
+    <button class="btn-start" onclick="iniciarApp()">ENTER / INICIO</button>
   </div>
 
-  <div class="stats-container">
-    
-    <!-- Ranura 1 -->
-    <div class="stat-row">
-      <div class="stat-row-title">SLOT 1</div>
-      <div class="input-group">
-        <select id="statType1">
-          <option value="atkFuego">Aumento del ataque de tipo fuego %</option>
-          <option value="dmgFuego" selected>Aumento del daño de tipo fuego %</option>
-          <option value="dmgEsp">Aumento del daño de los ataques especiales %</option>
-          <option value="dmgNorm">Aumento del daño de los ataques normales %</option>
-          <option value="probCrit">Probabilidad de crítico %</option>
-          <option value="dmgCrit">Daño crítico %</option>
-          <option value="cargaMagica">Eficacia de la carga mágica %</option>
-          <option value="rafagasFuego">Eficacia de las Ráfagas de fuego %</option>
-          <option value="dmgHabNorm">Aumento del daño de las habilidades normales %</option>
-          <option value="dmgHabRelevo">Aumento del daño de las habilidades de relevo %</option>
-          <option value="dmgDefinitivos">Aumento del daño de los movimientos definitivos %</option>
-          <option value="cdr">Reducción del tiempo de recuperación %</option>
-          <option value="defensa">Aumento de la defensa %</option>
-          <option value="ps">Aumento de los PS %</option>
-          <option value="resCrit">Resistencia crítica %</option>
-          <option value="defCrit">Defensa crítica %</option>
-        </select>
-      </div>
-      <div class="grid-2col">
-        <div>
-          <label>Actual %</label>
-          <input type="number" inputmode="decimal" step="0.01" id="act1" value="13.53">
-        </div>
-        <div>
-          <label>Nuevo %</label>
-          <input type="number" inputmode="decimal" step="0.01" id="nue1" value="0">
-        </div>
-      </div>
-    </div>
+  <!-- CALCULADORA DE CP -->
+  <div id="app-screen">
+    <div class="card">
+      <div class="title">🔥 7DS: Origin - Estimador de Orbe</div>
 
-    <!-- Ranura 2 -->
-    <div class="stat-row">
-      <div class="stat-row-title">SLOT 2</div>
       <div class="input-group">
-        <select id="statType2">
-          <option value="atkFuego" selected>Aumento del ataque de tipo fuego %</option>
-          <option value="dmgFuego">Aumento del daño de tipo fuego %</option>
-          <option value="dmgEsp">Aumento del daño de los ataques especiales %</option>
-          <option value="dmgNorm">Aumento del daño de los ataques normales %</option>
-          <option value="probCrit">Probabilidad de crítico %</option>
-          <option value="dmgCrit">Daño crítico %</option>
-          <option value="cargaMagica">Eficacia de la carga mágica %</option>
-          <option value="rafagasFuego">Eficacia de las Ráfagas de fuego %</option>
-          <option value="dmgHabNorm">Aumento del daño de las habilidades normales %</option>
-          <option value="dmgHabRelevo">Aumento del daño de las habilidades de relevo %</option>
-          <option value="dmgDefinitivos">Aumento del daño de los movimientos definitivos %</option>
-          <option value="cdr">Reducción del tiempo de recuperación %</option>
-          <option value="defensa">Aumento de la defensa %</option>
-          <option value="ps">Aumento de los PS %</option>
-        </select>
+        <label for="cpActual">Poder de Equipo Actual (CP)</label>
+        <input type="number" inputmode="decimal" id="cpActual" value="138503">
       </div>
-      <div class="grid-2col">
-        <div>
-          <label>Actual %</label>
-          <input type="number" inputmode="decimal" step="0.01" id="act2" value="33.76">
-        </div>
-        <div>
-          <label>Nuevo %</label>
-          <input type="number" inputmode="decimal" step="0.01" id="nue2" value="47.29">
-        </div>
-      </div>
-    </div>
 
-    <!-- Ranura 3 -->
-    <div class="stat-row">
-      <div class="stat-row-title">SLOT 3</div>
-      <div class="input-group">
-        <select id="statType3">
-          <option value="cargaMagica" selected>Eficacia de la carga mágica %</option>
-          <option value="atkFuego">Aumento del ataque de tipo fuego %</option>
-          <option value="dmgFuego">Aumento del daño de tipo fuego %</option>
-          <option value="dmgEsp">Aumento del daño de los ataques especiales %</option>
-          <option value="dmgNorm">Aumento del daño de los ataques normales %</option>
-          <option value="probCrit">Probabilidad de crítico %</option>
-          <option value="dmgCrit">Daño crítico %</option>
-          <option value="rafagasFuego">Eficacia de las Ráfagas de fuego %</option>
-          <option value="dmgHabNorm">Aumento del daño de las habilidades normales %</option>
-          <option value="dmgHabRelevo">Aumento del daño de las habilidades de relevo %</option>
-          <option value="dmgDefinitivos">Aumento del daño de los movimientos definitivos %</option>
-          <option value="cdr">Reducción del tiempo de recuperación %</option>
-        </select>
-      </div>
-      <div class="grid-2col">
-        <div>
-          <label>Actual %</label>
-          <input type="number" inputmode="decimal" step="0.01" id="act3" value="8.95">
+      <div class="stats-container">
+        
+        <!-- Slot 1 -->
+        <div class="stat-row">
+          <div class="stat-row-title">SLOT 1</div>
+          <div class="input-group">
+            <select id="statType1">
+              <option value="atkFuego">Aumento del ataque de tipo fuego %</option>
+              <option value="dmgFuego" selected>Aumento del daño de tipo fuego %</option>
+              <option value="dmgEsp">Aumento del daño de los ataques especiales %</option>
+              <option value="dmgNorm">Aumento del daño de los ataques normales %</option>
+              <option value="probCrit">Probabilidad de crítico %</option>
+              <option value="dmgCrit">Daño crítico %</option>
+              <option value="cargaMagica">Eficacia de la carga mágica %</option>
+              <option value="rafagasFuego">Eficacia de las Ráfagas de fuego %</option>
+              <option value="dmgHabNorm">Aumento del daño de las habilidades normales %</option>
+              <option value="dmgHabRelevo">Aumento del daño de las habilidades de relevo %</option>
+              <option value="dmgDefinitivos">Aumento del daño de los movimientos definitivos %</option>
+              <option value="cdr">Reducción del tiempo de recuperación %</option>
+              <option value="defensa">Aumento de la defensa %</option>
+              <option value="ps">Aumento de los PS %</option>
+              <option value="resCrit">Resistencia crítica %</option>
+              <option value="defCrit">Defensa crítica %</option>
+            </select>
+          </div>
+          <div class="grid-2col">
+            <div>
+              <label>Actual %</label>
+              <input type="number" inputmode="decimal" step="0.01" id="act1" value="13.53">
+            </div>
+            <div>
+              <label>Nuevo %</label>
+              <input type="number" inputmode="decimal" step="0.01" id="nue1" value="0">
+            </div>
+          </div>
         </div>
-        <div>
-          <label>Nuevo %</label>
-          <input type="number" inputmode="decimal" step="0.01" id="nue3" value="0">
-        </div>
-      </div>
-    </div>
 
-    <!-- Ranura 4 -->
-    <div class="stat-row">
-      <div class="stat-row-title">SLOT 4</div>
-      <div class="input-group">
-        <select id="statType4">
-          <option value="dmgEsp" selected>Aumento del daño de los ataques especiales %</option>
-          <option value="dmgCrit">Daño crítico %</option>
-          <option value="atkFuego">Aumento del ataque de tipo fuego %</option>
-          <option value="dmgFuego">Aumento del daño de tipo fuego %</option>
-          <option value="dmgNorm">Aumento del daño de los ataques normales %</option>
-          <option value="probCrit">Probabilidad de crítico %</option>
-          <option value="cargaMagica">Eficacia de la carga mágica %</option>
-          <option value="rafagasFuego">Eficacia de las Ráfagas de fuego %</option>
-          <option value="dmgHabNorm">Aumento del daño de las habilidades normales %</option>
-          <option value="dmgHabRelevo">Aumento del daño de las habilidades de relevo %</option>
-          <option value="dmgDefinitivos">Aumento del daño de los movimientos definitivos %</option>
-        </select>
-      </div>
-      <div class="grid-2col">
-        <div>
-          <label>Actual %</label>
-          <input type="number" inputmode="decimal" step="0.01" id="act4" value="23.34">
+        <!-- Slot 2 -->
+        <div class="stat-row">
+          <div class="stat-row-title">SLOT 2</div>
+          <div class="input-group">
+            <select id="statType2">
+              <option value="atkFuego" selected>Aumento del ataque de tipo fuego %</option>
+              <option value="dmgFuego">Aumento del daño de tipo fuego %</option>
+              <option value="dmgEsp">Aumento del daño de los ataques especiales %</option>
+              <option value="dmgNorm">Aumento del daño de los ataques normales %</option>
+              <option value="probCrit">Probabilidad de crítico %</option>
+              <option value="dmgCrit">Daño crítico %</option>
+              <option value="cargaMagica">Eficacia de la carga mágica %</option>
+              <option value="rafagasFuego">Eficacia de las Ráfagas de fuego %</option>
+              <option value="dmgHabNorm">Aumento del daño de las habilidades normales %</option>
+              <option value="dmgHabRelevo">Aumento del daño de las habilidades de relevo %</option>
+              <option value="dmgDefinitivos">Aumento del daño de los movimientos definitivos %</option>
+              <option value="cdr">Reducción del tiempo de recuperación %</option>
+              <option value="defensa">Aumento de la defensa %</option>
+              <option value="ps">Aumento de los PS %</option>
+            </select>
+          </div>
+          <div class="grid-2col">
+            <div>
+              <label>Actual %</label>
+              <input type="number" inputmode="decimal" step="0.01" id="act2" value="33.76">
+            </div>
+            <div>
+              <label>Nuevo %</label>
+              <input type="number" inputmode="decimal" step="0.01" id="nue2" value="47.29">
+            </div>
+          </div>
         </div>
-        <div>
-          <label>Nuevo %</label>
-          <input type="number" inputmode="decimal" step="0.01" id="nue4" value="25.82">
-        </div>
-      </div>
-    </div>
 
+        <!-- Slot 3 -->
+        <div class="stat-row">
+          <div class="stat-row-title">SLOT 3</div>
+          <div class="input-group">
+            <select id="statType3">
+              <option value="cargaMagica" selected>Eficacia de la carga mágica %</option>
+              <option value="atkFuego">Aumento del ataque de tipo fuego %</option>
+              <option value="dmgFuego">Aumento del daño de tipo fuego %</option>
+              <option value="dmgEsp">Aumento del daño de los ataques especiales %</option>
+              <option value="dmgNorm">Aumento del daño de los ataques normales %</option>
+              <option value="probCrit">Probabilidad de crítico %</option>
+              <option value="dmgCrit">Daño crítico %</option>
+              <option value="rafagasFuego">Eficacia de las Ráfagas de fuego %</option>
+              <option value="dmgHabNorm">Aumento del daño de las habilidades normales %</option>
+              <option value="dmgHabRelevo">Aumento del daño de las habilidades de relevo %</option>
+              <option value="dmgDefinitivos">Aumento del daño de los movimientos definitivos %</option>
+              <option value="cdr">Reducción del tiempo de recuperación %</option>
+            </select>
+          </div>
+          <div class="grid-2col">
+            <div>
+              <label>Actual %</label>
+              <input type="number" inputmode="decimal" step="0.01" id="act3" value="8.95">
+            </div>
+            <div>
+              <label>Nuevo %</label>
+              <input type="number" inputmode="decimal" step="0.01" id="nue3" value="0">
+            </div>
+          </div>
+        </div>
+
+        <!-- Slot 4 -->
+        <div class="stat-row">
+          <div class="stat-row-title">SLOT 4</div>
+          <div class="input-group">
+            <select id="statType4">
+              <option value="dmgEsp" selected>Aumento del daño de los ataques especiales %</option>
+              <option value="dmgCrit">Daño crítico %</option>
+              <option value="atkFuego">Aumento del ataque de tipo fuego %</option>
+              <option value="dmgFuego">Aumento del daño de tipo fuego %</option>
+              <option value="dmgNorm">Aumento del daño de los ataques normales %</option>
+              <option value="probCrit">Probabilidad de crítico %</option>
+              <option value="cargaMagica">Eficacia de la carga mágica %</option>
+              <option value="rafagasFuego">Eficacia de las Ráfagas de fuego %</option>
+              <option value="dmgHabNorm">Aumento del daño de las habilidades normales %</option>
+              <option value="dmgHabRelevo">Aumento del daño de las habilidades de relevo %</option>
+              <option value="dmgDefinitivos">Aumento del daño de los movimientos definitivos %</option>
+            </select>
+          </div>
+          <div class="grid-2col">
+            <div>
+              <label>Actual %</label>
+              <input type="number" inputmode="decimal" step="0.01" id="act4" value="23.34">
+            </div>
+            <div>
+              <label>Nuevo %</label>
+              <input type="number" inputmode="decimal" step="0.01" id="nue4" value="25.82">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <button type="button" class="btn-calc" onclick="calcularCP()">CALCULAR NUEVO PODER</button>
+
+      <div id="resultado" class="result-box">
+        <div id="tituloResultado" class="result-title"></div>
+        <div id="textoResultado" class="result-value"></div>
+      </div>
+
+      <div class="footer">Hecho por <span>Crisvieri</span></div>
+    </div>
   </div>
-
-  <button type="button" class="btn-calc" onclick="calcularCP()">CALCULAR NUEVO PODER</button>
-
-  <div id="resultado" class="result-box">
-    <div id="tituloResultado" class="result-title"></div>
-    <div id="textoResultado" class="result-value"></div>
-  </div>
-
-  <div class="footer">Hecho por <span>Crisvieri</span></div>
-</div>
 
 <script>
-  // Ponderaciones estimadas por stat según escala de CP
+  function iniciarApp() {
+    document.getElementById('welcome-screen').style.display = 'none';
+    document.getElementById('app-screen').style.display = 'block';
+    document.body.classList.add('app-bg');
+  }
+
   const pesosStats = {
     atkFuego: 0.0035,
     dmgFuego: 0.0032,
@@ -360,6 +445,18 @@
       resText.innerHTML = `Nuevo CP Estimado: ${nuevoCP.toLocaleString()}<br>(${incremento.toLocaleString()})`;
     }
   }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.keyCode === 13) {
+      e.preventDefault();
+      const welcomeScreen = document.getElementById('welcome-screen');
+      if (welcomeScreen.style.display !== 'none') {
+        iniciarApp();
+      } else {
+        calcularCP();
+      }
+    }
+  });
 </script>
 
 </body>
