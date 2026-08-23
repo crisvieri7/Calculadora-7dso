@@ -1,3 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escanor - Calculadora & Evaluación de Encantamientos</title>
+  <!-- Tesseract.js para leer texto de capturas -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: radial-gradient(circle at top, #1a0f2e 0%, #08090d 100%);
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      overflow-x: hidden;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 480px;
+      position: relative;
+    }
+
     /* PANTALLA DE BIENVENIDA MEJORADA */
     #splashScreen {
       display: flex;
@@ -33,7 +61,81 @@
       background: #281a08 url('IMG_2253.jpeg') center top / cover no-repeat;
     }
 
-    /* Avatar del perfil principal también ajustado para que se vea mejor */
+    .btn-enter {
+      background: linear-gradient(135deg, #ff9800 0%, #e65100 100%);
+      color: white;
+      border: none;
+      padding: 12px 36px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(230, 81, 0, 0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-enter:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(230, 81, 0, 0.6);
+    }
+
+    /* APLICACIÓN PRINCIPAL */
+    #mainApp {
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* PERFIL EDITABLE */
+    .hero-card {
+      background: rgba(16, 18, 26, 0.95);
+      border: 1px solid rgba(255, 152, 0, 0.3);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    }
+    .hero-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+    .hero-title { font-size: 1.05rem; font-weight: 800; color: #ffb74d; }
+    
+    .cp-box {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.8rem;
+      color: #8c93a8;
+      font-weight: bold;
+    }
+    .cp-input {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 152, 0, 0.4);
+      border-radius: 5px;
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: bold;
+      padding: 2px 6px;
+      width: 85px;
+      text-align: right;
+      outline: none;
+    }
+
+    .hero-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
     .hero-avatar {
       width: 65px;
       height: 80px;
@@ -43,3 +145,586 @@
       box-shadow: 0 0 10px rgba(255, 152, 0, 0.4);
       flex-shrink: 0;
     }
+    .hero-base-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      width: 100%;
+    }
+    .stat-pill {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 5px 6px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .stat-pill label { color: #8c93a8; font-size: 0.6rem; }
+    .hero-stat-input {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      color: #ffcc80;
+      font-size: 0.8rem;
+      font-weight: bold;
+      padding: 2px 4px;
+      width: 100%;
+      outline: none;
+    }
+
+    .upload-section {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .btn-upload {
+      background: rgba(255, 152, 0, 0.15);
+      border: 1px dashed rgba(255, 152, 0, 0.6);
+      color: #ffb74d;
+      padding: 8px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.2s;
+    }
+    .btn-upload:hover { background: rgba(255, 152, 0, 0.25); }
+    #fileInput { display: none; }
+    #loadingText {
+      font-size: 0.7rem;
+      color: #ff9800;
+      text-align: center;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .creator-credit {
+      text-align: right;
+      font-size: 0.65rem;
+      color: #6c757d;
+      margin-top: 8px;
+      font-style: italic;
+    }
+
+    /* EVALUADOR DE ENCANTAMIENTOS */
+    .calc-card {
+      background: rgba(16, 18, 26, 0.95);
+      border: 1px solid rgba(230, 81, 0, 0.3);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
+    }
+    .section-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #ff9800;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .comparison-container {
+      display: grid;
+      grid-template-columns: 1fr 16px 1fr;
+      gap: 6px;
+      align-items: center;
+    }
+    .column-panel {
+      background: rgba(8, 10, 15, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 8px 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .panel-title { font-size: 0.72rem; font-weight: 700; text-align: center; }
+    .panel-title.act { color: #8c93a8; }
+    .panel-title.nue { color: #ffb74d; }
+    .center-divider { text-align: center; color: #4a5064; font-size: 1rem; }
+    
+    .stat-box { display: flex; flex-direction: column; gap: 3px; }
+    
+    select {
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 5px;
+      color: #d1d5e0;
+      font-size: 0.62rem;
+      padding: 4px 2px;
+      outline: none;
+      width: 100%;
+    }
+
+    input.stat-input {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 5px;
+      color: #ffffff;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 4px;
+      text-align: right;
+      outline: none;
+      width: 100%;
+    }
+    input.stat-input.new-value {
+      border-color: rgba(255, 152, 0, 0.4);
+      background: rgba(255, 152, 0, 0.08);
+    }
+
+    .roll-quality {
+      font-size: 0.58rem;
+      color: #a0aabf;
+      text-align: right;
+      font-weight: bold;
+    }
+
+    .action-buttons { display: flex; gap: 8px; margin-top: 14px; }
+    .btn-calc {
+      flex: 2;
+      background: #e65100;
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btn-reset {
+      flex: 1;
+      background: #232733;
+      color: #8c93a8;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 12px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .result-box {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 6px;
+      text-align: center;
+      display: none;
+    }
+    .result-title { font-weight: bold; font-size: 0.85rem; margin-bottom: 2px; }
+    .result-value { font-size: 0.95rem; font-weight: bold; margin-bottom: 4px; }
+    .escanor-note { font-size: 0.72rem; margin-top: 5px; opacity: 0.9; line-height: 1.3; }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- PANTALLA DE BIENVENIDA -->
+    <div id="splashScreen">
+      <div class="splash-title">🔥 Calculadora Escanor 7DS</div>
+      <div class="splash-image-container"></div>
+      <button type="button" class="btn-enter" onclick="entrarApp()">ENTRAR</button>
+    </div>
+
+    <!-- APLICACIÓN PRINCIPAL -->
+    <div id="mainApp">
+      
+      <!-- PERFIL EDITABLE -->
+      <div class="hero-card">
+        <div class="hero-header">
+          <div class="hero-title">Escanor (Personalizado)</div>
+          <div class="cp-box">
+            CP: <input type="number" id="baseCP" class="cp-input" value="37188">
+          </div>
+        </div>
+        <div class="hero-profile">
+          <div class="hero-avatar" id="avatarPreview"></div>
+          <div class="hero-base-stats">
+            <div class="stat-pill">
+              <label>Atq. Fuego %</label>
+              <input type="number" step="0.01" id="baseAtqFuego" class="hero-stat-input" value="99.08">
+            </div>
+            <div class="stat-pill">
+              <label>Daño Fuego %</label>
+              <input type="number" step="0.01" id="baseDmgFuego" class="hero-stat-input" value="13.53">
+            </div>
+            <div class="stat-pill">
+              <label>Prob. Crítica %</label>
+              <input type="number" step="0.01" id="baseProbCrit" class="hero-stat-input" value="33.76">
+            </div>
+            <div class="stat-pill">
+              <label>Daño Crítico %</label>
+              <input type="number" step="0.01" id="baseDmgCrit" class="hero-stat-input" value="113.51">
+            </div>
+          </div>
+        </div>
+
+        <div class="upload-section">
+          <div style="display: flex; gap: 8px; margin-bottom: 6px;">
+            <label style="font-size: 0.7rem; color: #8c93a8; display: flex; align-items: center; gap: 4px; cursor: pointer;">
+              <input type="radio" name="destinoUpload" value="act" checked> Cargar a Roll Actual
+            </label>
+            <label style="font-size: 0.7rem; color: #ffb74d; display: flex; align-items: center; gap: 4px; cursor: pointer;">
+              <input type="radio" name="destinoUpload" value="nue"> Cargar a Nuevo Roll
+            </label>
+          </div>
+          <label for="fileInput" class="btn-upload">📷 Subir captura de orbe (Autodetecta Tipo y Valor)</label>
+          <input type="file" id="fileInput" accept="image/*" onchange="procesarCapturaStats(event)">
+          <div id="loadingText">Leyendo stats y tipos de la orbe... Por favor espera 🔍</div>
+        </div>
+
+        <div class="creator-credit">Made by Christenzen</div>
+      </div>
+
+      <!-- EVALUADOR DE ENCANTAMIENTOS -->
+      <div class="calc-card">
+        <div class="section-title">Evaluador de Encantamientos (Orbe de Fuego)</div>
+
+        <div class="comparison-container">
+          <!-- ACTUAL -->
+          <div class="column-panel">
+            <div class="panel-title act">Roll Actual</div>
+            <div class="stat-box">
+              <select id="s1_act" onchange="actualizarPorcentajes()"></select>
+              <input type="number" step="0.01" class="stat-input" id="act1" value="13.53" oninput="actualizarPorcentajes()">
+              <div class="roll-quality" id="q_act1">Calidad: --%</div>
+            </div>
+            <div class="stat-box">
+              <select id="s2_act" onchange="actualizarPorcentajes()"></select>
+              <input type="number" step="0.01" class="stat-input" id="act2" value="33.76" oninput="actualizarPorcentajes()">
+              <div class="roll-quality" id="q_act2">Calidad: --%</div>
+            </div>
+            <div class="stat-box">
+              <select id="s3_act" onchange="actualizarPorcentajes()"></select>
+              <input type="number" step="0.01" class="stat-input" id="act3" value="8.95" oninput="actualizarPorcentajes()">
+              <div class="roll-quality" id="q_act3">Calidad: --%</div>
+            </div>
+            <div class="stat-box">
+              <select id="s4_act" onchange="actualizarPorcentajes()"></select>
+              <input type="number" step="0.01" class="stat-input" id="act4" value="23.34" oninput="actualizarPorcentajes()">
+              <div class="roll-quality" id="q_act4">Calidad: --%</div>
+            </div>
+          </div>
+
+          <div class="center-divider">➔</div>
+
+          <!-- NUEVO -->
+          <div class="column-panel">
+            <div class="panel-title nue">Nuevo Roll (Orbe)</div>
+            <div class="stat-box">
+              <select id="s1_nue" onchange="actualizarPorcentajes()"></select>
+              <input type="number" step="0.01" class="stat-input new-value" id="nue1" value="13.53" oninput="actualizarPorcentajes()">
+              <div class="roll-quality" id="q_nue1">Calidad: --%</div>
+            </div>
+            <div class="stat-box">
+              <select id="s2_nue" onchange="actualizarPorcentajes()"></select>
+              <input type="number" step="0.01" class="stat-input new-value" id="nue2" value="33.76" oninput="actualizarPorcentajes()">
+              <div class="roll-quality" id="q_nue2">Calidad: --%</div>
+            </div>
+            <div class="stat-box">
+              <select id="s3_nue" onchange="actualizarPorcentajes()"></select>
+              <input type="number" step="0.01" class="stat-input new-value" id="nue3" value="12.00" oninput="actualizarPorcentajes()">
+              <div class="roll-quality" id="q_nue3">Calidad: --%</div>
+            </div>
+            <div class="stat-box">
+              <select id="s4_nue" onchange="actualizarPorcentajes()"></select>
+              <input type="number" step="0.01" class="stat-input new-value" id="nue4" value="23.34" oninput="actualizarPorcentajes()">
+              <div class="roll-quality" id="q_nue4">Calidad: --%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button type="button" class="btn-reset" onclick="copiarActual()">Copiar Actual</button>
+          <button type="button" class="btn-calc" onclick="calcular()">Evaluar Orbe</button>
+        </div>
+
+        <div id="resultado" class="result-box">
+          <div id="tituloResultado" class="result-title"></div>
+          <div id="textoResultado" class="result-value"></div>
+          <div id="notaEscanor" class="escanor-note"></div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+<script>
+  function entrarApp() {
+    const splash = document.getElementById('splashScreen');
+    const mainApp = document.getElementById('mainApp');
+    splash.style.opacity = '0';
+    setTimeout(() => {
+      splash.style.display = 'none';
+      mainApp.style.display = 'flex';
+      actualizarPorcentajes();
+    }, 400);
+  }
+
+  const pesosStats = {
+    dmgFuego: 1.10,
+    probCrit: 1.05,
+    dmgCrit: 0.90,
+    atkFuego: 0.80,
+    dmgEspecial: 0.85,
+    dmgDef: 0.75,
+    cargaMagica: 0.20,
+    defensa: 0.60,
+    ps: 0.60,
+    dmgNormal: 0.80,
+    dmgHabNormal: 0.75,
+    dmgRelevo: 0.85,
+    dmgDefinitiva: 0.90,
+    cdr: 0.70,
+    resCrit: 0.65,
+    defCrit: 0.65,
+    rafagaFuego: 1.00
+  };
+
+  const rangosStats = {
+    defensa: { min: 3.40, max: 5.71 },
+    ps: { min: 2.49, max: 4.17 },
+    dmgNormal: { min: 18.56, max: 30.95 },
+    dmgEspecial: { min: 16.90, max: 28.17 },
+    dmgHabNormal: { min: 13.01, max: 21.69 },
+    dmgRelevo: { min: 22.86, max: 38.12 },
+    dmgDefinitiva: { min: 10.19, max: 16.98 },
+    cdr: { min: 6.71, max: 11.19 },
+    cargaMagica: { min: 8.95, max: 14.97 },
+    probCrit: { min: 6.05, max: 10.11 },
+    resCrit: { min: 6.05, max: 10.11 },
+    dmgCrit: { min: 10.69, max: 17.83 },
+    defCrit: { min: 10.69, max: 17.83 },
+    atkFuego: { min: 26.26, max: 43.76 },
+    dmgFuego: { min: 11.35, max: 18.98 },
+    rafagaFuego: { min: 11.19, max: 18.68 }
+  };
+
+  const opciones = [
+    { value: 'dmgFuego', text: 'Aumento del daño de tipo Fuego (+11.35% ~ 18.98%)' },
+    { value: 'atkFuego', text: 'Aumento del ataque de tipo Fuego (+26.26% ~ 43.76%)' },
+    { value: 'rafagaFuego', text: 'Eficacia de las Ráfagas de fuego (+11.19% ~ 18.68%)' },
+    { value: 'probCrit', text: 'Probabilidad de crítico (+6.05% ~ 10.11%)' },
+    { value: 'dmgCrit', text: 'Daño crítico (+10.69% ~ 17.83%)' },
+    { value: 'dmgEspecial', text: 'Aumento del daño de ataques especiales (+16.90% ~ 28.17%)' },
+    { value: 'dmgDefinitiva', text: 'Aumento del daño de movimientos definitivos (+10.19% ~ 16.98%)' },
+    { value: 'dmgRelevo', text: 'Aumento del daño de habilidades de relevo (+22.86% ~ 38.12%)' },
+    { value: 'cargaMagica', text: 'Eficacia de la carga mágica (+8.95% ~ 14.97%)' },
+    { value: 'dmgNormal', text: 'Aumento del daño de ataques normales (+18.56% ~ 30.95%)' },
+    { value: 'dmgHabNormal', text: 'Aumento del daño de habilidades normales (+13.01% ~ 21.69%)' },
+    { value: 'cdr', text: 'Reducción del tiempo de recuperación (+6.71% ~ 11.19%)' },
+    { value: 'defensa', text: 'Aumento de la defensa (+3.40% ~ 5.71%)' },
+    { value: 'ps', text: 'Aumento de los PS (+2.49% ~ 4.17%)' },
+    { value: 'resCrit', text: 'Resistencia crítica (+6.05% ~ 10.11%)' },
+    { value: 'defCrit', text: 'Defensa crítica (+10.69% ~ 17.83%)' }
+  ];
+
+  function init() {
+    const selects = document.querySelectorAll('select');
+    selects.forEach(s => {
+      s.innerHTML = '';
+      opciones.forEach(o => {
+        const opt = document.createElement('option');
+        opt.value = o.value;
+        opt.textContent = o.text;
+        s.appendChild(opt);
+      });
+    });
+
+    document.getElementById('s1_act').value = 'dmgFuego';
+    document.getElementById('s2_act').value = 'atkFuego';
+    document.getElementById('s3_act').value = 'cargaMagica';
+    document.getElementById('s4_act').value = 'dmgEspecial';
+
+    document.getElementById('s1_nue').value = 'dmgFuego';
+    document.getElementById('s2_nue').value = 'atkFuego';
+    document.getElementById('s3_nue').value = 'probCrit';
+    document.getElementById('s4_nue').value = 'dmgEspecial';
+    
+    actualizarPorcentajes();
+  }
+
+  function calcularPorcentajeStat(tipo, valor) {
+    const rango = rangosStats[tipo];
+    if (!rango) return 0;
+    let pct = ((valor - rango.min) / (rango.max - rango.min)) * 100;
+    if (pct < 0) pct = 0;
+    if (pct > 100) pct = 100;
+    return pct.toFixed(0);
+  }
+
+  function actualizarPorcentajes() {
+    ['act', 'nue'].forEach(tipoPanel => {
+      for (let i = 1; i <= 4; i++) {
+        const statTipo = document.getElementById(`s${i}_${tipoPanel}`).value;
+        const statVal = parseFloat(document.getElementById(`${tipoPanel}${i}`).value) || 0;
+        const pct = calcularPorcentajeStat(statTipo, statVal);
+        
+        const etiqueta = document.getElementById(`q_${tipoPanel}${i}`);
+        etiqueta.innerText = `Calidad: ${pct}%`;
+
+        if (pct >= 85) {
+          etiqueta.style.color = '#4caf50'; 
+        } else if (pct >= 50) {
+          etiqueta.style.color = '#ffb74d'; 
+        } else {
+          etiqueta.style.color = '#e57373'; 
+        }
+      }
+    });
+  }
+
+  function detectarTipoStat(lineaTexto) {
+    const t = lineaTexto.toLowerCase();
+    if (t.includes('fuego') && t.includes('ataque')) return 'atkFuego';
+    if (t.includes('fuego') && t.includes('daño')) return 'dmgFuego';
+    if (t.includes('ráfagas') || t.includes('rafagas')) return 'rafagaFuego';
+    if (t.includes('probabilidad') && t.includes('crítico')) return 'probCrit';
+    if (t.includes('daño crítico') || t.includes('dano critico')) return 'dmgCrit';
+    if (t.includes('especial')) return 'dmgEspecial';
+    if (t.includes('definitiva')) return 'dmgDefinitiva';
+    if (t.includes('relevo')) return 'dmgRelevo';
+    if (t.includes('carga mágica') || t.includes('carga magica')) return 'cargaMagica';
+    if (t.includes('normales') && t.includes('ataques')) return 'dmgNormal';
+    if (t.includes('normales') && t.includes('habilidades')) return 'dmgHabNormal';
+    if (t.includes('recuperación') || t.includes('recuperacion')) return 'cdr';
+    if (t.includes('defensa') && !t.includes('crítica')) return 'defensa';
+    if (t.includes('ps')) return 'ps';
+    if (t.includes('resistencia crítica')) return 'resCrit';
+    if (t.includes('defensa crítica')) return 'defCrit';
+    return null;
+  }
+
+  function procesarCapturaStats(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const destinoSelecto = document.querySelector('input[name="destinoUpload"]:checked').value;
+    const loadingText = document.getElementById('loadingText');
+    loadingText.style.display = 'block';
+
+    Tesseract.recognize(file, 'eng+spa', { 
+      logger: m => console.log(m) 
+    }).then(({ data: { text } }) => {
+      loadingText.style.display = 'none';
+      
+      const lineas = text.split('\n').filter(l => l.trim().length > 0);
+      let statIndex = 1;
+
+      lineas.forEach(linea => {
+        if (statIndex > 4) return;
+        
+        const numsMatch = linea.match(/\d+([.,]\d+)?/g);
+        if (numsMatch && numsMatch.length > 0) {
+          let valorStr = numsMatch[0].replace(',', '.');
+          let valorNum = parseFloat(valorStr);
+
+          if (!valorStr.includes('.') && valorNum > 99) {
+            valorNum = valorNum / 100;
+          }
+
+          if (valorNum > 50) {
+            valorNum = 18.00; 
+          }
+
+          valorNum = Math.round(valorNum * 100) / 100;
+
+          const tipoDetectado = detectarTipoStat(linea);
+
+          document.getElementById(`${destinoSelecto}${statIndex}`).value = valorNum;
+
+          if (tipoDetectado) {
+            document.getElementById(`s${statIndex}_${destinoSelecto}`).value = tipoDetectado;
+          }
+
+          statIndex++;
+        }
+      });
+
+      actualizarPorcentajes();
+
+      if (statIndex > 1) {
+        alert(`¡Captura cargada con éxito en el ${destinoSelecto === 'act' ? 'Roll Actual' : 'Nuevo Roll'}!`);
+      } else {
+        alert("No se pudieron extraer datos legibles. Intenta con una imagen más clara.");
+      }
+    }).catch(err => {
+      loadingText.style.display = 'none';
+      console.error(err);
+      alert("Error al procesar la imagen.");
+    });
+  }
+
+  function copiarActual() {
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById(`s${i}_nue`).value = document.getElementById(`s${i}_act`).value;
+      document.getElementById(`nue${i}`).value = document.getElementById(`act${i}`).value;
+    }
+    actualizarPorcentajes();
+  }
+
+  function calcular() {
+    let cpBase = parseFloat(document.getElementById('baseCP').value) || 0;
+    let atqBase = parseFloat(document.getElementById('baseAtqFuego').value) || 0;
+
+    let pAct = 0, pNue = 0;
+
+    for (let i = 1; i <= 4; i++) {
+      const tA = document.getElementById(`s${i}_act`).value;
+      const vA = parseFloat(document.getElementById(`act${i}`).value) || 0;
+      pAct += vA * (pesosStats[tA] || 0);
+
+      const tN = document.getElementById(`s${i}_nue`).value;
+      const vN = parseFloat(document.getElementById(`nue${i}`).value) || 0;
+      pNue += vN * (pesosStats[tN] || 0);
+    }
+
+    const difPuntaje = pNue - pAct;
+    const porcentajeCambio = ((difPuntaje / (pAct || 1)) * 100).toFixed(1);
+
+    let nuevoCPestimado = Math.round(cpBase + (difPuntaje * 12));
+    let nuevoAtqEstimado = (atqBase + (difPuntaje * 0.4)).toFixed(2);
+
+    const resBox = document.getElementById('resultado');
+    const resTitle = document.getElementById('tituloResultado');
+    const resText = document.getElementById('textoResultado');
+    const resNota = document.getElementById('notaEscanor');
+
+    resBox.style.display = 'block';
+
+    if (difPuntaje > 0) {
+      resBox.style.backgroundColor = '#112919';
+      resBox.style.border = '1px solid #2e6d3e';
+      resTitle.style.color = '#4caf50';
+      resTitle.innerText = '✓ ¡EQUIPA ESTA NUEVA ORBE!';
+      resText.style.color = '#81c784';
+      resText.innerText = `Rendimiento de Orbe: +${porcentajeCambio}%`;
+      resNota.style.color = '#a5d6a7';
+      resNota.innerHTML = `Al cambiarla, tu equipo mejorará:<br><b>• CP Estimado:</b> ${cpBase} ➔ <b>${nuevoCPestimado}</b><br><b>• Atq. Fuego:</b> ${atqBase}% ➔ <b>${nuevoAtqEstimado}%</b><br>¡Excelente mejora hacia tu meta de 140k!`;
+    } else if (difPuntaje === 0) {
+      resBox.style.backgroundColor = '#212631';
+      resBox.style.border = '1px solid #4f5b75';
+      resTitle.style.color = '#90caf9';
+      resTitle.innerText = 'ORBE EQUIVALENTE';
+      resText.style.color = '#e3f2fd';
+      resText.innerText = 'El impacto de combate es idéntico.';
+      resNota.innerHTML = 'Tus estadísticas globales no sufrirán cambios significativos.';
+    } else {
+      resBox.style.backgroundColor = '#2d1414';
+      resBox.style.border = '1px solid #6d2e2e';
+      resTitle.style.color = '#e57373';
+      resTitle.innerText = '✕ NO CAMBIAR (DESCARTAR ORBE)';
+      resText.style.color = '#ef9a9a';
+      resText.innerText = `Pérdida de rendimiento: ${porcentajeCambio}%`;
+      resNota.style.color = '#ffab91';
+      resNota.innerHTML = `Al cambiarla perderías efectividad:<br><b>• CP Proyectado bajaría a:</b> ~${nuevoCPestimado}<br>Quédate con tu orbe actual para no alejarte de tu meta.`;
+    }
+  }
+
+  init();
+</script>
+
+</body>
+</html>
