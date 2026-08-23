@@ -3,352 +3,213 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora Orbe de Fuego - SøulEaters</title>
+  <title>7DS: Origin - Estimador de CP</title>
   <style>
-    :root {
-      --bg-dark: #0d0f17;
-      --card-bg: rgba(22, 27, 46, 0.95);
-      --fire-glow: #ff5400;
-      --text-main: #f1f5f9;
-      --accent-green: #00f5d4;
-      --border-color: #2a324b;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    }
-
     body {
-      background: var(--bg-dark);
-      color: var(--text-main);
-      min-height: 100vh;
+      background-color: #0f0f11;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      overflow-x: hidden;
-      padding-bottom: 40px;
-    }
-
-    /* Pantalla de Entrada con Imagen Centrada y Escalada */
-    #intro-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: #0d0f17;
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
       justify-content: center;
-      align-items: center;
       padding: 20px;
-      gap: 20px;
-      transition: opacity 0.6s ease, visibility 0.6s ease;
     }
-
-    .intro-banner {
-      max-width: 90%;
-      max-height: 65vh;
-      object-fit: contain;
+    .card {
+      background-color: #1a1a1e;
+      border: 1px solid #2d2d35;
       border-radius: 12px;
-      box-shadow: 0 0 20px rgba(255, 84, 0, 0.3);
-    }
-
-    .enter-box {
-      text-align: center;
-    }
-
-    .enter-btn {
-      padding: 14px 45px;
-      font-size: 1.2rem;
-      font-weight: 800;
-      letter-spacing: 2px;
-      color: #fff;
-      background: linear-gradient(135deg, #ff5400, #b01802);
-      border: 2px solid rgba(255, 255, 255, 0.9);
-      border-radius: 50px;
-      cursor: pointer;
-      box-shadow: 0 0 20px rgba(255, 84, 0, 0.8);
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-    }
-
-    .enter-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 30px rgba(255, 84, 0, 1);
-    }
-
-    .fade-out {
-      opacity: 0;
-      visibility: hidden;
-    }
-
-    /* Encabezado */
-    header {
-      text-align: center;
-      margin: 30px 0 20px 0;
+      padding: 24px;
       width: 100%;
+      max-width: 400px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
     }
-
-    .clan-title {
-      font-size: 2.2rem;
-      letter-spacing: 2px;
-      color: #fff;
-      text-shadow: 0 0 12px var(--fire-glow), 0 0 22px #b01802;
-    }
-
-    .credits {
-      font-size: 0.9rem;
-      color: #94a3b8;
-      margin-top: 4px;
-    }
-
-    /* Contenedor Principal */
-    .main-wrapper {
-      width: 100%;
-      max-width: 600px;
-      padding: 0 15px;
-    }
-
-    /* Tarjeta Calculadora */
-    .calc-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-
-    .calc-top-bar {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    .title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      text-align: center;
       margin-bottom: 20px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border-color);
     }
-
-    .calc-title {
-      font-size: 1.2rem;
-      color: var(--fire-glow);
-      text-transform: uppercase;
-      letter-spacing: 1px;
+    .input-group {
+      margin-bottom: 15px;
     }
-
-    .slots-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .slot-row {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 10px;
-      background: rgba(15, 23, 42, 0.6);
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .slot-header {
-      grid-column: 1 / -1;
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.8rem;
-      color: #94a3b8;
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: #a0a0ab;
+      margin-bottom: 5px;
       font-weight: 600;
-      margin-bottom: 2px;
     }
-
-    select, input {
+    input {
       width: 100%;
       padding: 10px;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-      background: #0f172a;
+      background-color: #0d0d0f;
+      border: 1px solid #33333d;
+      border-radius: 6px;
       color: #fff;
-      font-size: 0.9rem;
-      outline: none;
+      font-size: 1rem;
+      box-sizing: border-box;
     }
-
-    select:focus, input:focus { border-color: var(--fire-glow); }
-
-    /* Resultados */
-    .results-panel {
-      margin-top: 20px;
-      padding-top: 15px;
-      border-top: 1px solid var(--border-color);
-      text-align: center;
-    }
-
-    .bar-bg {
-      width: 100%;
-      height: 12px;
-      background: #1e293b;
-      border-radius: 10px;
-      overflow: hidden;
-      margin: 10px 0;
-    }
-
-    .bar-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #ff4d4d, #ffdb4d, var(--accent-green));
-      transition: width 0.3s ease;
-    }
-
-    .stat-result-box {
-      display: flex;
-      justify-content: space-around;
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
       margin-top: 15px;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 12px;
-      border-radius: 10px;
     }
-
-    .res-block span { display: block; font-size: 0.75rem; color: #94a3b8; }
-    .res-block strong { font-size: 1.2rem; color: var(--accent-green); }
+    .section-title {
+      color: #ff7b3d;
+      font-size: 0.85rem;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #33333d;
+      padding-bottom: 4px;
+    }
+    .btn-calc {
+      width: 100%;
+      background-color: #e65100;
+      color: white;
+      border: none;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-calc:hover {
+      background-color: #f57c00;
+    }
+    .result-box {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      background-color: #1b3823;
+      border: 1px solid #2e6d3e;
+      display: none;
+    }
+    .result-title {
+      color: #4caf50;
+      font-weight: bold;
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+    }
+    .result-value {
+      color: #81c784;
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+    .footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #70707a;
+      margin-top: 20px;
+    }
+    .footer span {
+      color: #ff7b3d;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Pantalla de Entrada -->
-  <div id="intro-screen">
-    <img src="IMG_2226.jpeg" alt="Bienvenida" class="intro-banner">
-    <div class="enter-box">
-      <button class="enter-btn" onclick="enterSite()">ENTRAR</button>
+<div class="card">
+  <div class="title">🔥 7DS: Origin - Estimador de CP</div>
+
+  <!-- Poder de Equipo Actual -->
+  <div class="input-group">
+    <label for="cpActual">Poder de Equipo Actual (CP de Pantalla)</label>
+    <input type="number" id="cpActual" value="138503">
+  </div>
+
+  <!-- Columnas de Stats -->
+  <div class="stats-grid">
+    <!-- Stats Actuales -->
+    <div>
+      <div class="section-title">STATS ACTUALES</div>
+      <div class="input-group">
+        <label>Prob. Crítica %</label>
+        <input type="number" step="0.01" id="probCritAct" value="7.79">
+      </div>
+      <div class="input-group">
+        <label>Ataque Fuego %</label>
+        <input type="number" step="0.01" id="atkFuegoAct" value="33.76">
+      </div>
+      <div class="input-group">
+        <label>Daño Crítico %</label>
+        <input type="number" step="0.01" id="dmgCritAct" value="15.79">
+      </div>
+      <div class="input-group">
+        <label>Daño Hab. Normales %</label>
+        <input type="number" step="0.01" id="dmgNormAct" value="16.73">
+      </div>
+    </div>
+
+    <!-- Stats Nuevas -->
+    <div>
+      <div class="section-title">STATS NUEVAS</div>
+      <div class="input-group">
+        <label>Prob. Crítica %</label>
+        <input type="number" step="0.01" id="probCritNue" value="0">
+      </div>
+      <div class="input-group">
+        <label>Ataque Fuego %</label>
+        <input type="number" step="0.01" id="atkFuegoNue" value="47.29">
+      </div>
+      <div class="input-group">
+        <label>Daño Crítico %</label>
+        <input type="number" step="0.01" id="dmgCritNue" value="25.82">
+      </div>
+      <div class="input-group">
+        <label>Daño Hab. Especiales %</label>
+        <input type="number" step="0.01" id="dmgEspNue" value="23.34">
+      </div>
     </div>
   </div>
 
-  <!-- Encabezado -->
-  <header>
-    <h1 class="clan-title">Clan SøulEaters</h1>
-    <p class="credits">Creado por <strong>Christenzen</strong></p>
-  </header>
+  <button class="btn-calc" onclick="calcularCP()">CALCULAR NUEVO PODER</button>
 
-  <!-- Calculadora de Orbe de Fuego -->
-  <div class="main-wrapper">
-    <div class="calc-card">
-      <div class="calc-top-bar">
-        <h2 class="calc-title">Orbe de Hechizo: Fuego (4 Ranuras)</h2>
-      </div>
-
-      <div id="slots-container" class="slots-grid"></div>
-
-      <!-- Panel Resultados -->
-      <div class="results-panel">
-        <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
-          <span>Calidad de Encantamiento</span>
-          <strong id="quality-text" style="color: var(--accent-green);">0%</strong>
-        </div>
-        <div class="bar-bg">
-          <div id="quality-bar" class="bar-fill"></div>
-        </div>
-
-        <div class="stat-result-box">
-          <div class="res-block">
-            <span>EFICIENCIA</span>
-            <strong id="res-rank">-</strong>
-          </div>
-          <div class="res-block">
-            <span>ATAQUE EST.</span>
-            <strong id="cp-text">+0</strong>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div id="resultado" class="result-box">
+    <div class="result-title">✓ ¡TIRADA POSITIVA!</div>
+    <div class="result-value" id="textoResultado"></div>
   </div>
 
-  <script>
-    function enterSite() {
-      const intro = document.getElementById('intro-screen');
-      intro.classList.add('fade-out');
-      setTimeout(() => { intro.style.display = 'none'; }, 600);
+  <div class="footer">Hecho por <span>Crisvieri</span></div>
+</div>
+
+<script>
+  function calcularCP() {
+    const cpActual = parseFloat(document.getElementById('cpActual').value) || 0;
+
+    // Diferencias porcentuales
+    const diffProb = (parseFloat(document.getElementById('probCritNue').value) || 0) - (parseFloat(document.getElementById('probCritAct').value) || 0);
+    const diffAtk = (parseFloat(document.getElementById('atkFuegoNue').value) || 0) - (parseFloat(document.getElementById('atkFuegoAct').value) || 0);
+    const diffDmg = (parseFloat(document.getElementById('dmgCritNue').value) || 0) - (parseFloat(document.getElementById('dmgCritAct').value) || 0);
+    const diffHab = (parseFloat(document.getElementById('dmgEspNue').value) || 0) - (parseFloat(document.getElementById('dmgNormAct').value) || 0);
+
+    // Ponderación de pesos por tipo de stat
+    const cambioPorcentual = (diffAtk * 0.0035) + (diffDmg * 0.0025) + (diffProb * 0.0020) + (diffHab * 0.0020);
+    
+    const incremento = Math.round(cpActual * cambioPorcentual);
+    const nuevoCP = cpActual + incremento;
+
+    const resBox = document.getElementById('resultado');
+    const resText = document.getElementById('textoResultado');
+    
+    resBox.style.display = 'block';
+    
+    if (incremento >= 0) {
+      resBox.style.backgroundColor = '#1b3823';
+      resBox.style.borderColor = '#2e6d3e';
+      resText.innerHTML = `Nuevo CP Estimado: ${nuevoCP.toLocaleString()}<br>(+${incremento.toLocaleString()})`;
+    } else {
+      resBox.style.backgroundColor = '#381b1b';
+      resBox.style.borderColor = '#6d2e2e';
+      resText.innerHTML = `Nuevo CP Estimado: ${nuevoCP.toLocaleString()}<br>(${incremento.toLocaleString()})`;
     }
+  }
+</script>
 
-    const legendaryStats = {
-      "Aumento del ataque de tipo fuego %": { min: 26.26, max: 43.76 },
-      "Aumento del daño de tipo fuego %": { min: 11.35, max: 18.98 },
-      "Eficacia de la carga mágica %": { min: 5.00, max: 10.00 },
-      "Aumento del daño de los ataques especiales %": { min: 15.00, max: 25.00 }
-    };
-
-    function buildSlots() {
-      const container = document.getElementById('slots-container');
-      container.innerHTML = '';
-
-      for (let i = 1; i <= 4; i++) {
-        const row = document.createElement('div');
-        row.className = 'slot-row';
-        
-        let options = '';
-        for (let stat in legendaryStats) {
-          options += `<option value="${stat}">${stat}</option>`;
-        }
-
-        row.innerHTML = `
-          <div class="slot-header">
-            <span>RANURA ${i}</span>
-            <span id="range-label-${i}">[0 ~ 0]</span>
-          </div>
-          <select id="stat-select-${i}" onchange="calculate()">${options}</select>
-          <input type="number" id="stat-val-${i}" value="0" step="0.01" 
-                 onfocus="if(this.value==='0')this.value=''" 
-                 onblur="if(this.value==='')this.value='0'" 
-                 oninput="calculate()">
-        `;
-        container.appendChild(row);
-      }
-      calculate();
-    }
-
-    function calculate() {
-      let totalPerc = 0;
-      let totalAtkVal = 0;
-
-      for (let i = 1; i <= 4; i++) {
-        const select = document.getElementById(`stat-select-${i}`);
-        const input = document.getElementById(`stat-val-${i}`);
-        const label = document.getElementById(`range-label-${i}`);
-
-        if (!select || !input) continue;
-
-        const statName = select.value;
-        const val = parseFloat(input.value) || 0;
-        const config = legendaryStats[statName];
-
-        label.innerText = `[${config.min}% ~ ${config.max}%]`;
-
-        let rollQuality = (val - config.min) / (config.max - config.min);
-        if (rollQuality < 0) rollQuality = 0;
-        if (rollQuality > 1) rollQuality = 1;
-
-        totalPerc += rollQuality;
-
-        if (statName.includes("ataque") || statName.includes("daño")) totalAtkVal += val;
-      }
-
-      const finalQuality = Math.round((totalPerc / 4) * 100);
-      document.getElementById('quality-bar').style.width = `${finalQuality}%`;
-      document.getElementById('quality-text').innerText = `${finalQuality}%`;
-
-      let rank = 'S';
-      if (finalQuality < 50) rank = 'C';
-      else if (finalQuality < 75) rank = 'B';
-      else if (finalQuality < 90) rank = 'A';
-      document.getElementById('res-rank').innerText = rank;
-
-      const estimatedCP = Math.round(totalAtkVal * 15 + (finalQuality * 10));
-      document.getElementById('cp-text').innerText = `+${estimatedCP}`;
-    }
-
-    buildSlots();
-  </script>
 </body>
 </html>
