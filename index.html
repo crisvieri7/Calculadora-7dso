@@ -13,7 +13,7 @@
 
     body {
       background-color: #0f0f11;
-      /* Ajusta 'ban.png' si tu archivo de imagen tiene otro nombre o formato */
+      /* Imagen de fondo de Ban con overlay oscuro */
       background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), 
                         url('ban.png');
       background-size: cover;
@@ -147,7 +147,7 @@
 <div class="card">
   <div class="title">🔥 7DS: Origin - Estimador de CP</div>
 
-  <!-- Poder de Equipo Actual (CP de Pantalla) -->
+  <!-- Poder de Equipo Actual -->
   <div class="input-group">
     <label for="cpActual">Poder de Equipo Actual (CP de Pantalla)</label>
     <input type="number" id="cpActual" value="138503">
@@ -245,7 +245,7 @@
     }
   }
 
-  // Escucha la tecla ENTER en toda la página para ejecutar la función
+  // Evento para activar cálculo presionando la tecla Enter en cualquier parte
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
       e.preventDefault();
