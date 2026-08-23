@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>7DS: Origin - Estimador de CP (Ofensivo)</title>
+  <title>Calculadora de Encantamiento Avanzada - Escanor</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background-color: #0d0e12;
+      background-color: #0b0d12;
       color: #ffffff;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       min-height: 100vh;
@@ -17,290 +17,273 @@
       padding: 12px;
     }
     .game-card {
-      background: rgba(18, 20, 28, 0.96);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
-      padding: 20px 14px;
+      background: rgba(16, 18, 26, 0.98);
+      border: 1px solid rgba(230, 81, 0, 0.3);
+      border-radius: 14px;
+      padding: 18px 14px;
       width: 100%;
       max-width: 500px;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.9);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
     }
     .game-title {
       text-align: center;
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       font-weight: 700;
-      margin-bottom: 15px;
-      color: #f0f0f5;
+      color: #ff9800;
     }
-    .cp-box {
+    .game-subtitle {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #8c93a8;
+      margin-bottom: 12px;
+    }
+    .stat-summary {
       background: rgba(0, 0, 0, 0.4);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 8px;
-      padding: 10px;
-      margin-bottom: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      font-size: 0.72rem;
+      color: #b0b6c6;
     }
-    .cp-box label { font-size: 0.8rem; color: #8f93a3; font-weight: 600; }
-    .cp-box input {
-      background: transparent;
-      border: none;
-      color: #fff;
-      font-size: 1.1rem;
-      font-weight: bold;
-      text-align: right;
-      width: 120px;
-      outline: none;
-    }
+    .stat-summary span { color: #ffb74d; font-weight: bold; }
     .comparison-container {
       display: grid;
-      grid-template-columns: 1fr 18px 1fr;
-      gap: 8px;
+      grid-template-columns: 1fr 16px 1fr;
+      gap: 6px;
       align-items: center;
     }
     .column-panel {
-      background: rgba(10, 12, 18, 0.5);
+      background: rgba(8, 10, 15, 0.6);
       border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 10px;
-      padding: 10px 8px;
+      border-radius: 8px;
+      padding: 8px 6px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
-    .panel-title {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 2px;
-    }
-    .panel-title.act { color: #a0a5b8; }
-    .panel-title.nue { color: #78a1e8; }
-    .center-divider {
-      text-align: center;
-      color: #5d637a;
-      font-size: 1.1rem;
-      font-weight: bold;
-    }
-    .stat-box { display: flex; flex-direction: column; gap: 4px; }
+    .panel-title { font-size: 0.72rem; font-weight: 700; text-align: center; }
+    .panel-title.act { color: #8c93a8; }
+    .panel-title.nue { color: #ffb74d; }
+    .center-divider { text-align: center; color: #4a5064; font-size: 1rem; }
+    .stat-box { display: flex; flex-direction: column; gap: 3px; }
     select {
-      background: rgba(0, 0, 0, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 6px;
-      color: #e1e4ed;
-      font-size: 0.68rem;
-      padding: 5px 3px;
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 5px;
+      color: #d1d5e0;
+      font-size: 0.65rem;
+      padding: 4px 2px;
       outline: none;
       width: 100%;
-      text-overflow: ellipsis;
     }
     input.stat-input {
       background: rgba(0, 0, 0, 0.4);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 6px;
+      border-radius: 5px;
       color: #ffffff;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 600;
-      padding: 5px;
+      padding: 4px;
       text-align: right;
       outline: none;
       width: 100%;
     }
     input.stat-input.new-value {
-      border-color: rgba(120, 161, 232, 0.4);
-      background: rgba(120, 161, 232, 0.08);
+      border-color: rgba(255, 152, 0, 0.4);
+      background: rgba(255, 152, 0, 0.08);
     }
+    .action-buttons { display: flex; gap: 8px; margin-top: 14px; }
     .btn-calc {
-      width: 100%;
+      flex: 2;
       background: #e65100;
       color: white;
       border: none;
-      padding: 14px;
-      font-size: 1rem;
+      padding: 12px;
+      font-size: 0.9rem;
       font-weight: bold;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
-      margin-top: 16px;
-      text-transform: uppercase;
+    }
+    .btn-reset {
+      flex: 1;
+      background: #232733;
+      color: #8c93a8;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 12px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
     }
     .result-box {
-      margin-top: 14px;
-      padding: 12px;
-      border-radius: 8px;
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 6px;
       text-align: center;
       display: none;
     }
-    .result-title { font-weight: bold; font-size: 0.9rem; margin-bottom: 4px; }
-    .result-value { font-size: 1.15rem; font-weight: bold; }
+    .result-title { font-weight: bold; font-size: 0.85rem; margin-bottom: 2px; }
+    .result-value { font-size: 0.95rem; font-weight: bold; }
+    .escanor-note { font-size: 0.72rem; margin-top: 5px; opacity: 0.9; }
   </style>
 </head>
 <body>
 
   <div class="game-card">
-    <div class="game-title">Resultados de encantamiento</div>
+    <div class="game-title">Encantamiento: Hacha de Escanor</div>
+    <div class="game-subtitle">Optimizador de Daño / Evaluador de Tiradas</div>
 
-    <div class="cp-box">
-      <label for="cpActual">CP Actual</label>
-      <input type="number" inputmode="decimal" id="cpActual" value="138503">
+    <!-- Perfil Actual -->
+    <div class="stat-summary">
+      <div>Prob. Crít: <span>33.76%</span></div>
+      <div>Daño Crít: <span>113.51%</span></div>
+      <div>Atq Fuego %: <span>99.08%</span></div>
+      <div>Daño Fuego %: <span>13.53%</span></div>
     </div>
 
     <div class="comparison-container">
-      
-      <!-- BONIFICACIÓN ACTUAL -->
+      <!-- ACTUAL -->
       <div class="column-panel">
-        <div class="panel-title act">Bonificación actual</div>
-
-        <div class="stat-box">
-          <select id="statType1_act" class="stat-select-act-1"></select>
-          <input type="number" inputmode="decimal" step="0.01" class="stat-input" id="act1" value="13.53">
-        </div>
-
-        <div class="stat-box">
-          <select id="statType2_act" class="stat-select-act-2"></select>
-          <input type="number" inputmode="decimal" step="0.01" class="stat-input" id="act2" value="33.76">
-        </div>
-
-        <div class="stat-box">
-          <select id="statType3_act" class="stat-select-act-3"></select>
-          <input type="number" inputmode="decimal" step="0.01" class="stat-input" id="act3" value="8.95">
-        </div>
-
-        <div class="stat-box">
-          <select id="statType4_act" class="stat-select-act-4"></select>
-          <input type="number" inputmode="decimal" step="0.01" class="stat-input" id="act4" value="23.34">
-        </div>
+        <div class="panel-title act">Hacha Actual</div>
+        <div class="stat-box"><select id="s1_act"></select><input type="number" step="0.01" class="stat-input" id="act1" value="13.53"></div>
+        <div class="stat-box"><select id="s2_act"></select><input type="number" step="0.01" class="stat-input" id="act2" value="33.76"></div>
+        <div class="stat-box"><select id="s3_act"></select><input type="number" step="0.01" class="stat-input" id="act3" value="8.95"></div>
+        <div class="stat-box"><select id="s4_act"></select><input type="number" step="0.01" class="stat-input" id="act4" value="23.34"></div>
       </div>
 
-      <div class="center-divider">➾</div>
+      <div class="center-divider">➔</div>
 
-      <!-- NUEVA BONIFICACIÓN -->
+      <!-- NUEVO -->
       <div class="column-panel">
-        <div class="panel-title nue">Nueva bonificación</div>
-
-        <div class="stat-box">
-          <select id="statType1_nue" class="stat-select-nue-1"></select>
-          <input type="number" inputmode="decimal" step="0.01" class="stat-input new-value" id="nue1" value="13.25">
-        </div>
-
-        <div class="stat-box">
-          <select id="statType2_nue" class="stat-select-nue-2"></select>
-          <input type="number" inputmode="decimal" step="0.01" class="stat-input new-value" id="nue2" value="14.07">
-        </div>
-
-        <div class="stat-box">
-          <select id="statType3_nue" class="stat-select-nue-3"></select>
-          <input type="number" inputmode="decimal" step="0.01" class="stat-input new-value" id="nue3" value="26.26">
-        </div>
-
-        <div class="stat-box">
-          <select id="statType4_nue" class="stat-select-nue-4"></select>
-          <input type="number" inputmode="decimal" step="0.01" class="stat-input new-value" id="nue4" value="15.79">
-        </div>
+        <div class="panel-title nue">Nuevo Intento</div>
+        <div class="stat-box"><select id="s1_nue"></select><input type="number" step="0.01" class="stat-input new-value" id="nue1" value="13.53"></div>
+        <div class="stat-box"><select id="s2_nue"></select><input type="number" step="0.01" class="stat-input new-value" id="nue2" value="33.76"></div>
+        <div class="stat-box"><select id="s3_nue"></select><input type="number" step="0.01" class="stat-input new-value" id="nue3" value="12.00"></div>
+        <div class="stat-box"><select id="s4_nue"></select><input type="number" step="0.01" class="stat-input new-value" id="nue4" value="23.34"></div>
       </div>
-
     </div>
 
-    <button type="button" class="btn-calc" onclick="calcularCP()">CALCULAR NUEVO PODER</button>
+    <div class="action-buttons">
+      <button type="button" class="btn-reset" onclick="copiarActual()">Copiar Actual</button>
+      <button type="button" class="btn-calc" onclick="calcular()">Evaluar Tirada</button>
+    </div>
 
     <div id="resultado" class="result-box">
       <div id="tituloResultado" class="result-title"></div>
       <div id="textoResultado" class="result-value"></div>
+      <div id="notaEscanor" class="escanor-note"></div>
     </div>
   </div>
 
 <script>
-  // PONDERACIÓN SOLAMENTE DE STATS CLAVE DE DAÑO / CP
+  // Pesos calibrados con la fórmula real de daño
   const pesosStats = {
-    atkFuego: 0.0035,        // Ataque de tipo fuego %
-    dmgFuego: 0.0032,        // Daño de tipo fuego %
-    probCrit: 0.0028,        // Probabilidad de crítico %
-    dmgCrit: 0.0025,         // Daño crítico %
-    dmgDefinitivos: 0.0024,  // Daño de movimientos definitivos %
-    dmgEsp: 0.0022,          // Daño de ataques especiales %
-    cargaMagica: 0.0015,     // Eficacia de la carga mágica %
-    ninguno: 0
+    dmgFuego: 1.10,     // Aumento del daño de tipo fuego (Alta prioridad por bajo % actual)
+    probCrit: 1.05,     // Probabilidad de crítico (Alta prioridad para estabilizar el 113% de daño crít)
+    dmgCrit: 0.90,      // Daño crítico %
+    atkFuego: 0.80,     // Aumento del ataque de tipo fuego (Suavizado por estar cerca de 100%)
+    dmgEspecial: 0.85, // Aumento daño ataques especiales
+    dmgDef: 0.75,      // Aumento daño mov. definitivos
+    cargaMagica: 0.20  // Eficacia de la carga mágica
   };
 
-  const opcionesStats = [
-    { value: 'atkFuego', text: 'Ataque tipo fuego %' },
-    { value: 'dmgFuego', text: 'Daño tipo fuego %' },
+  const opciones = [
+    { value: 'dmgFuego', text: 'Aumento del daño de tipo fuego' },
+    { value: 'atkFuego', text: 'Aumento del ataque de tipo fuego' },
     { value: 'probCrit', text: 'Probabilidad de crítico %' },
     { value: 'dmgCrit', text: 'Daño crítico %' },
-    { value: 'dmgDefinitivos', text: 'Mov. definitivos %' },
-    { value: 'dmgEsp', text: 'Ataques especiales %' },
-    { value: 'cargaMagica', text: 'Carga mágica %' },
-    { value: 'ninguno', text: '-- Ninguno --' }
+    { value: 'dmgEspecial', text: 'Aumento daño ataques especiales' },
+    { value: 'dmgDef', text: 'Aumento daño mov. definitivos' },
+    { value: 'cargaMagica', text: 'Eficacia de la carga mágica' }
   ];
 
-  function poblarSelects() {
+  function init() {
     const selects = document.querySelectorAll('select');
-    selects.forEach(select => {
-      select.innerHTML = '';
-      opcionesStats.forEach(opt => {
-        const optionEl = document.createElement('option');
-        optionEl.value = opt.value;
-        optionEl.textContent = opt.text;
-        select.appendChild(optionEl);
+    selects.forEach(s => {
+      s.innerHTML = '';
+      opciones.forEach(o => {
+        const opt = document.createElement('option');
+        opt.value = o.value;
+        opt.textContent = o.text;
+        s.appendChild(opt);
       });
     });
 
-    // Valores por defecto acordes a tu captura de pantalla
-    document.getElementById('statType1_act').value = 'dmgFuego';
-    document.getElementById('statType2_act').value = 'atkFuego';
-    document.getElementById('statType3_act').value = 'cargaMagica';
-    document.getElementById('statType4_act').value = 'dmgEsp';
+    document.getElementById('s1_act').value = 'dmgFuego';
+    document.getElementById('s2_act').value = 'atkFuego';
+    document.getElementById('s3_act').value = 'cargaMagica';
+    document.getElementById('s4_act').value = 'dmgEspecial';
 
-    document.getElementById('statType1_nue').value = 'cargaMagica';
-    document.getElementById('statType2_nue').value = 'dmgDefinitivos';
-    document.getElementById('statType3_nue').value = 'atkFuego';
-    document.getElementById('statType4_nue').value = 'dmgCrit';
+    document.getElementById('s1_nue').value = 'dmgFuego';
+    document.getElementById('s2_nue').value = 'atkFuego';
+    document.getElementById('s3_nue').value = 'probCrit'; // Sugerencia inicial
+    document.getElementById('s4_nue').value = 'dmgEspecial';
   }
 
-  function calcularCP() {
-    const cpActual = parseFloat(document.getElementById('cpActual').value) || 0;
-    
-    let puntosOrbeAnterior = 0;
-    let puntosOrbeNuevo = 0;
+  function copiarActual() {
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById(`s${i}_nue`).value = document.getElementById(`s${i}_act`).value;
+      document.getElementById(`nue${i}`).value = document.getElementById(`act${i}`).value;
+    }
+  }
+
+  function calcular() {
+    let pAct = 0, pNue = 0;
 
     for (let i = 1; i <= 4; i++) {
-      const typeAct = document.getElementById(`statType${i}_act`).value;
-      const actVal = parseFloat(document.getElementById(`act${i}`).value) || 0;
-      puntosOrbeAnterior += (actVal * (pesosStats[typeAct] || 0));
+      const tA = document.getElementById(`s${i}_act`).value;
+      const vA = parseFloat(document.getElementById(`act${i}`).value) || 0;
+      pAct += vA * (pesosStats[tA] || 0);
 
-      const typeNue = document.getElementById(`statType${i}_nue`).value;
-      const nueVal = parseFloat(document.getElementById(`nue${i}`).value) || 0;
-      puntosOrbeNuevo += (nueVal * (pesosStats[typeNue] || 0));
+      const tN = document.getElementById(`s${i}_nue`).value;
+      const vN = parseFloat(document.getElementById(`nue${i}`).value) || 0;
+      pNue += vN * (pesosStats[tN] || 0);
     }
 
-    const cambioTotalPorcentual = puntosOrbeNuevo - puntosOrbeAnterior;
-    const incremento = Math.round(cpActual * (cambioTotalPorcentual / 100));
-    const nuevoCP = cpActual + incremento;
+    const dif = pNue - pAct;
+    const porcentajeCambio = ((dif / pAct) * 100).toFixed(1);
 
     const resBox = document.getElementById('resultado');
     const resTitle = document.getElementById('tituloResultado');
     const resText = document.getElementById('textoResultado');
-    
+    const resNota = document.getElementById('notaEscanor');
+
     resBox.style.display = 'block';
-    
-    if (incremento >= 0) {
+
+    if (dif > 0) {
       resBox.style.backgroundColor = '#112919';
       resBox.style.border = '1px solid #2e6d3e';
       resTitle.style.color = '#4caf50';
-      resTitle.innerText = '✓ ¡APLICAR (TIRADA POSITIVA)!';
+      resTitle.innerText = '✓ ¡ACEPTAR NUEVO ENCANTAMIENTO!';
       resText.style.color = '#81c784';
-      resText.innerHTML = `Nuevo CP Estimado: ${nuevoCP.toLocaleString()}<br>(+${incremento.toLocaleString()})`;
+      resText.innerText = `Rendimiento de DPS Estimado: +${porcentajeCambio}%`;
+      resNota.style.color = '#a5d6a7';
+      resNota.innerText = 'Esta tirada aprovecha mejor tus multiplicadores críticos y de fuego.';
+    } else if (dif === 0) {
+      resBox.style.backgroundColor = '#212631';
+      resBox.style.border = '1px solid #4f5b75';
+      resTitle.style.color = '#90caf9';
+      resTitle.innerText = 'EQUIVALENTE';
+      resText.style.color = '#e3f2fd';
+      resText.innerText = 'El impacto en combate es prácticamente idéntico.';
+      resNota.innerText = '';
     } else {
       resBox.style.backgroundColor = '#2d1414';
       resBox.style.border = '1px solid #6d2e2e';
       resTitle.style.color = '#e57373';
-      resTitle.innerText = '✕ ¡MANTENER (TIRADA NEGATIVA)!';
+      resTitle.innerText = '✕ DESCARTAR (MANTENER ACTUAL)';
       resText.style.color = '#ef9a9a';
-      resText.innerHTML = `Nuevo CP Estimado: ${nuevoCP.toLocaleString()}<br>(${incremento.toLocaleString()})`;
+      resText.innerText = `Pérdida de Rendimiento: ${porcentajeCambio}%`;
+      resNota.style.color = '#ffab91';
+      resNota.innerText = 'No compenses perder Atq. Fuego o Daño Fuego a menos que sea por mucha Prob. Crítica.';
     }
   }
 
-  // Cargar lista filtrada al iniciar
-  poblarSelects();
+  init();
 </script>
 
 </body>
