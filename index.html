@@ -146,6 +146,12 @@
 <div class="card">
   <div class="title">🔥 7DS: Origin - Estimador de CP</div>
 
+  <!-- Campo superior del Poder de Equipo Actual -->
+  <div class="input-group">
+    <label for="cpActual">Poder de Equipo Actual (CP de Pantalla)</label>
+    <input type="number" id="cpActual" value="138503">
+  </div>
+
   <div class="stats-grid">
     <!-- Stats Actuales -->
     <div>
@@ -190,7 +196,7 @@
     </div>
   </div>
 
-  <button class="btn-calc" onclick="calcularCP()">CALCULAR NUEVO PODER</button>
+  <button type="button" class="btn-calc" id="btnCalcular">CALCULAR NUEVO PODER</button>
 
   <div id="resultado" class="result-box">
     <div id="tituloResultado" class="result-title"></div>
@@ -202,7 +208,7 @@
 
 <script>
   function calcularCP() {
-    const cpBase = 138503;
+    const cpActual = parseFloat(document.getElementById('cpActual').value) || 0;
 
     const diffProb = (parseFloat(document.getElementById('probCritNue').value) || 0) - (parseFloat(document.getElementById('probCritAct').value) || 0);
     const diffAtk = (parseFloat(document.getElementById('atkFuegoNue').value) || 0) - (parseFloat(document.getElementById('atkFuegoAct').value) || 0);
@@ -211,8 +217,8 @@
 
     const cambioPorcentual = (diffAtk * 0.0035) + (diffDmg * 0.0025) + (diffProb * 0.0020) + (diffHab * 0.0020);
     
-    const incremento = Math.round(cpBase * cambioPorcentual);
-    const nuevoCP = cpBase + incremento;
+    const incremento = Math.round(cpActual * cambioPorcentual);
+    const nuevoCP = cpActual + incremento;
 
     const resBox = document.getElementById('resultado');
     const resTitle = document.getElementById('tituloResultado');
@@ -237,6 +243,10 @@
     }
   }
 
+  // Evento directo al botón
+  document.getElementById('btnCalcular').addEventListener('click', calcularCP);
+
+  // Escuchar la tecla Enter en los inputs
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
       e.preventDefault();
