@@ -7,90 +7,120 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: radial-gradient(circle at top, #1a0f2e 0%, #08090d 100%);
+      background: #08090d;
       color: #ffffff;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 16px;
       overflow-x: hidden;
     }
 
     .app-container {
       width: 100%;
       max-width: 480px;
+      min-height: 100vh;
       position: relative;
+      background: radial-gradient(circle at top, #2b1206 0%, #08090d 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
     }
 
     /* PANTALLA DE BIENVENIDA */
     #splashScreen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 40px 20px;
+      overflow: hidden;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .splash-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+      filter: brightness(0.7) contrast(1.15) saturate(1.2);
+    }
+
+    .splash-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(8,9,13,0.6) 0%, rgba(8,9,13,0.2) 40%, rgba(8,9,13,0.92) 85%);
+      z-index: 2;
+    }
+
+    .splash-content-top, .splash-content-bottom {
+      position: relative;
+      z-index: 3;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       text-align: center;
-      gap: 16px;
-      padding: 20px;
-      background: rgba(16, 18, 26, 0.95);
-      border: 1px solid rgba(255, 152, 0, 0.4);
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
-      transition: opacity 0.4s ease, transform 0.4s ease;
+      width: 100%;
     }
 
     .splash-title {
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: #ffb74d;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #ff9800;
+      text-shadow: 0 0 15px rgba(255, 152, 0, 0.6), 0 2px 8px rgba(0,0,0,0.9);
+      letter-spacing: 1px;
     }
 
-    .splash-image-container {
-      width: 100%;
-      max-width: 260px;
-      height: 380px;
-      border-radius: 12px;
-      border: 2px solid #ff9800;
-      box-shadow: 0 0 25px rgba(255, 152, 0, 0.4);
-      overflow: hidden;
-      background: #12151c;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .splash-image-container img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
+    .splash-subtitle {
+      font-size: 0.75rem;
+      color: #ffcc80;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      margin-top: 4px;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.8);
     }
 
     .btn-enter {
-      background: linear-gradient(135deg, #ff9800 0%, #e65100 100%);
+      background: linear-gradient(135deg, #ffb300 0%, #e65100 100%);
       color: white;
-      border: none;
-      padding: 12px 36px;
-      font-size: 1rem;
-      font-weight: bold;
-      border-radius: 30px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      padding: 15px 50px;
+      font-size: 1.15rem;
+      font-weight: 900;
+      border-radius: 35px;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(230, 81, 0, 0.4);
+      box-shadow: 0 0 25px rgba(255, 152, 0, 0.6);
       transition: transform 0.2s, box-shadow 0.2s;
+      letter-spacing: 1.5px;
     }
 
     .btn-enter:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 20px rgba(230, 81, 0, 0.6);
+      transform: scale(1.06);
+      box-shadow: 0 0 35px rgba(255, 152, 0, 0.9);
     }
 
     /* APLICACIÓN PRINCIPAL */
     #mainApp {
       display: none;
+      width: 100%;
       flex-direction: column;
       gap: 16px;
-      animation: fadeIn 0.5s ease forwards;
+      animation: fadeIn 0.6s ease forwards;
+      z-index: 5;
     }
 
     @keyframes fadeIn {
@@ -100,11 +130,11 @@
 
     /* PERFIL EDITABLE */
     .hero-card {
-      background: rgba(16, 18, 26, 0.95);
-      border: 1px solid rgba(255, 152, 0, 0.3);
+      background: rgba(18, 14, 12, 0.95);
+      border: 1px solid rgba(255, 152, 0, 0.4);
       border-radius: 16px;
       padding: 16px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(255, 152, 0, 0.05);
     }
     .hero-header {
       display: flex;
@@ -121,11 +151,11 @@
       align-items: center;
       gap: 4px;
       font-size: 0.8rem;
-      color: #8c93a8;
+      color: #a0aabf;
       font-weight: bold;
     }
     .cp-input {
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.6);
       border: 1px solid rgba(255, 152, 0, 0.4);
       border-radius: 5px;
       color: #fff;
@@ -148,7 +178,7 @@
       border-radius: 10px;
       border: 2px solid #ff9800;
       background: #12151c;
-      box-shadow: 0 0 10px rgba(255, 152, 0, 0.4);
+      box-shadow: 0 0 12px rgba(255, 152, 0, 0.5);
       flex-shrink: 0;
       overflow: hidden;
       display: flex;
@@ -176,7 +206,7 @@
       flex-direction: column;
       gap: 2px;
     }
-    .stat-pill label { color: #8c93a8; font-size: 0.6rem; }
+    .stat-pill label { color: #a0aabf; font-size: 0.6rem; }
     .hero-stat-input {
       background: rgba(0, 0, 0, 0.4);
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -199,14 +229,14 @@
     }
     .creator-credit {
       font-size: 0.65rem;
-      color: #6c757d;
+      color: #8c93a8;
       font-style: italic;
     }
 
     /* EVALUADOR DE ENCANTAMIENTOS */
     .calc-card {
-      background: rgba(16, 18, 26, 0.95);
-      border: 1px solid rgba(230, 81, 0, 0.3);
+      background: rgba(18, 14, 12, 0.95);
+      border: 1px solid rgba(230, 81, 0, 0.4);
       border-radius: 16px;
       padding: 16px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
@@ -214,9 +244,10 @@
     .section-title {
       font-size: 0.9rem;
       font-weight: 700;
-      color: #ff9800;
+      color: #ffb74d;
       text-align: center;
       margin-bottom: 12px;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.5);
     }
     .comparison-container {
       display: grid;
@@ -225,7 +256,7 @@
       align-items: center;
     }
     .column-panel {
-      background: rgba(8, 10, 15, 0.6);
+      background: rgba(10, 8, 7, 0.7);
       border: 1px solid rgba(255, 255, 255, 0.05);
       border-radius: 8px;
       padding: 8px 6px;
@@ -234,9 +265,9 @@
       gap: 8px;
     }
     .panel-title { font-size: 0.72rem; font-weight: 700; text-align: center; }
-    .panel-title.act { color: #8c93a8; }
+    .panel-title.act { color: #a0aabf; }
     .panel-title.nue { color: #ffb74d; }
-    .center-divider { text-align: center; color: #4a5064; font-size: 1rem; }
+    .center-divider { text-align: center; color: #ff9800; font-size: 1rem; text-shadow: 0 0 8px rgba(255,152,0,0.6); }
     
     .stat-box { display: flex; flex-direction: column; gap: 3px; }
     
@@ -278,7 +309,7 @@
     .action-buttons { display: flex; gap: 6px; margin-top: 14px; }
     .btn-calc {
       flex: 1.5;
-      background: #e65100;
+      background: linear-gradient(135deg, #ff9800 0%, #d84315 100%);
       color: white;
       border: none;
       padding: 10px 6px;
@@ -286,11 +317,12 @@
       font-weight: bold;
       border-radius: 6px;
       cursor: pointer;
+      box-shadow: 0 4px 12px rgba(216, 67, 21, 0.4);
     }
     .btn-reset {
       flex: 1;
       background: #232733;
-      color: #8c93a8;
+      color: #a0aabf;
       border: 1px solid rgba(255, 255, 255, 0.08);
       padding: 10px 6px;
       font-size: 0.68rem;
@@ -308,11 +340,9 @@
       font-weight: bold;
       border-radius: 6px;
       cursor: pointer;
-      display: none; /* Se muestra solo al evaluar una mejora */
+      display: none;
     }
-    .btn-apply:hover {
-      background: #388e3c;
-    }
+    .btn-apply:hover { background: #388e3c; }
 
     .result-box {
       margin-top: 12px;
@@ -332,11 +362,17 @@
     
     <!-- PANTALLA DE BIENVENIDA -->
     <div id="splashScreen">
-      <div class="splash-title">🔥 Calculadora Escanor 7DS</div>
-      <div class="splash-image-container">
-        <img src="IMG_2253.jpeg" alt="Escanor Completo">
+      <img src="IMG_2253.jpeg" alt="Fondo Escanor" class="splash-bg">
+      <div class="splash-overlay"></div>
+      
+      <div class="splash-content-top">
+        <div class="splash-title">🔥 ESCANOR: SUNSHINE</div>
+        <div class="splash-subtitle">El León del Orgullo</div>
       </div>
-      <button type="button" class="btn-enter" onclick="entrarApp()">ENTRAR</button>
+
+      <div class="splash-content-bottom">
+        <button type="button" class="btn-enter" onclick="entrarApp()">ENTRAR</button>
+      </div>
     </div>
 
     <!-- APLICACIÓN PRINCIPAL -->
@@ -409,7 +445,7 @@
             </div>
           </div>
 
-          <div class="center-divider">➔</div>
+          <div class="center-divider">☀️</div>
 
           <!-- NUEVO -->
           <div class="column-panel">
@@ -438,9 +474,9 @@
         </div>
 
         <div class="action-buttons">
-          <button type="button" class="btn-reset" onclick="copiarActualParaNuevo()">Copiar Actual</button>
-          <button type="button" class="btn-calc" onclick="calcular()">Evaluar</button>
-          <button type="button" id="btnAplicar" class="btn-apply" onclick="mantenerYCambiar()">✓ Mantener</button>
+          <button type="button" class="btn-reset" onclick="reproducirClick(); copiarActualParaNuevo()">Copiar Actual</button>
+          <button type="button" class="btn-calc" onclick="reproducirCruelSun(); calcular()">Evaluar Sol</button>
+          <button type="button" id="btnAplicar" class="btn-apply" onclick="reproducirExito(); mantenerYCambiar()">✓ Mantener</button>
         </div>
 
         <div id="resultado" class="result-box">
@@ -455,15 +491,105 @@
   </div>
 
 <script>
+  let audioCtx = null;
+
+  function initAudio() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+  }
+
+  // EFECTO "CRUEL SUN" / PODER DE ESCANOR (Zumbido de plasma solar + explosión de energía)
+  function reproducirCruelSun() {
+    initAudio();
+    if (!audioCtx) return;
+    
+    let now = audioCtx.currentTime;
+
+    // 1. Zumbido grave de energía acumulada (Sunshine Aura)
+    let osc1 = audioCtx.createOscillator();
+    let gain1 = audioCtx.createGain();
+    osc1.type = 'sawtooth';
+    osc1.frequency.setValueAtTime(80, now);
+    osc1.frequency.exponentialRampToValueAtTime(320, now + 0.5);
+
+    gain1.gain.setValueAtTime(0.2, now);
+    gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+
+    osc1.connect(gain1);
+    gain1.connect(audioCtx.destination);
+    osc1.start(now);
+    osc1.stop(now + 0.6);
+
+    // 2. Destello agudo simulando calor extremo
+    let osc2 = audioCtx.createOscillator();
+    let gain2 = audioCtx.createGain();
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(440, now + 0.2);
+    osc2.frequency.exponentialRampToValueAtTime(1200, now + 0.5);
+
+    gain2.gain.setValueAtTime(0.1, now + 0.2);
+    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
+
+    osc2.connect(gain2);
+    gain2.connect(audioCtx.destination);
+    osc2.start(now + 0.2);
+    osc2.stop(now + 0.55);
+  }
+
+  function reproducirClick() {
+    initAudio();
+    if (!audioCtx) return;
+    
+    let osc = audioCtx.createOscillator();
+    let gain = audioCtx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.06);
+    
+    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.06);
+    
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.06);
+  }
+
+  function reproducirExito() {
+    initAudio();
+    if (!audioCtx) return;
+    
+    // Fanfarria triunfal corta del León del Orgullo
+    [392.00, 523.25, 659.25, 783.99].forEach((freq, index) => {
+      let osc = audioCtx.createOscillator();
+      let gain = audioCtx.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + (index * 0.07));
+      
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime + (index * 0.07));
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + (index * 0.07 + 0.25));
+      
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(audioCtx.currentTime + (index * 0.07));
+      osc.stop(audioCtx.currentTime + (index * 0.07) + 0.25);
+    });
+  }
+
   function entrarApp() {
+    reproducirCruelSun();
     const splash = document.getElementById('splashScreen');
     const mainApp = document.getElementById('mainApp');
+    
     splash.style.opacity = '0';
+    splash.style.transform = 'scale(1.05)';
+    
     setTimeout(() => {
       splash.style.display = 'none';
       mainApp.style.display = 'flex';
       actualizarPorcentajes();
-    }, 400);
+    }, 600);
   }
 
   const pesosStats = {
@@ -545,8 +671,6 @@
     document.getElementById('s2_nue').value = 'atkFuego';
     document.getElementById('s3_nue').value = 'probCrit';
     document.getElementById('s4_nue').value = 'dmgEspecial';
-    
-    actualizarPorcentajes();
   }
 
   function calcularPorcentajeStat(tipo, valor) {
@@ -587,14 +711,12 @@
     actualizarPorcentajes();
   }
 
-  // NUEVA FUNCIÓN: Mover los datos del nuevo roll directamente al panel actual
   function mantenerYCambiar() {
     for (let i = 1; i <= 4; i++) {
       document.getElementById(`s${i}_act`).value = document.getElementById(`s${i}_nue`).value;
       document.getElementById(`act${i}`).value = document.getElementById(`nue${i}`).value;
     }
 
-    // Actualizar también el CP y el Ataque Base de la tarjeta de Escanor con los estimados de la mejora
     let cpEst = document.getElementById('btnAplicar').getAttribute('data-cp');
     let atqEst = document.getElementById('btnAplicar').getAttribute('data-atq');
     
@@ -603,7 +725,6 @@
 
     actualizarPorcentajes();
 
-    // Ocultar botón y mostrar aviso de éxito
     document.getElementById('btnAplicar').style.display = 'none';
     const resBox = document.getElementById('resultado');
     const resTitle = document.getElementById('tituloResultado');
@@ -653,13 +774,12 @@
       resBox.style.backgroundColor = '#112919';
       resBox.style.border = '1px solid #2e6d3e';
       resTitle.style.color = '#4caf50';
-      resTitle.innerText = '✓ ¡EQUIPA ESTA NUEVA ORBE!';
+      resTitle.innerText = '✓ ¡EL SOL BRILLA A TU FAVOR!';
       resText.style.color = '#81c784';
       resText.innerText = `Rendimiento de Orbe: +${porcentajeCambio}%`;
       resNota.style.color = '#a5d6a7';
       resNota.innerHTML = `Al cambiarla, tu equipo mejorará:<br><b>• CP Estimado:</b> ${cpBase} ➔ <b>${nuevoCPestimado}</b><br><b>• Atq. Fuego:</b> ${atqBase}% ➔ <b>${nuevoAtqEstimado}%</b><br>¡Haz clic en "Mantener" para guardar los cambios!`;
 
-      // Guardar datos temporales en el botón y mostrarlo
       btnAplicar.setAttribute('data-cp', nuevoCPestimado);
       btnAplicar.setAttribute('data-atq', nuevoAtqEstimado);
       btnAplicar.style.display = 'block';
@@ -678,11 +798,11 @@
         resBox.style.backgroundColor = '#2d1414';
         resBox.style.border = '1px solid #6d2e2e';
         resTitle.style.color = '#e57373';
-        resTitle.innerText = '✕ NO CAMBIAR (DESCARTAR ORBE)';
+        resTitle.innerText = '✕ DESCARTAR (QUÉ ORGULLO NO BAJAR)';
         resText.style.color = '#ef9a9a';
         resText.innerText = `Pérdida de rendimiento: ${porcentajeCambio}%`;
         resNota.style.color = '#ffab91';
-        resNota.innerHTML = `Al cambiarla perderías efectividad:<br><b>• CP Proyectado bajaría a:</b> ~${nuevoCPestimado}<br>Quédate con tu orbe actual para no alejarte de tu meta.`;
+        resNota.innerHTML = `Al cambiarla perderías efectividad:<br><b>• CP Proyectado bajaría a:</b> ~${nuevoCPestimado}<br>Mantén tu orbe actual para estar en la cima.`;
       }
     }
   }
