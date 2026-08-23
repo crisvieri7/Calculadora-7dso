@@ -4,8 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Escanor - Calculadora & Evaluación de Encantamientos</title>
-  <!-- Tesseract.js para leer texto de capturas -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -26,7 +24,7 @@
       position: relative;
     }
 
-    /* PANTALLA DE BIENVENIDA MEJORADA */
+    /* PANTALLA DE BIENVENIDA */
     #splashScreen {
       display: flex;
       flex-direction: column;
@@ -49,7 +47,6 @@
       text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     }
 
-    /* Imagen grande y completa, rectangular vertical tipo banner */
     .splash-image-container {
       width: 100%;
       max-width: 280px;
@@ -173,39 +170,11 @@
       outline: none;
     }
 
-    .upload-section {
-      margin-top: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .btn-upload {
-      background: rgba(255, 152, 0, 0.15);
-      border: 1px dashed rgba(255, 152, 0, 0.6);
-      color: #ffb74d;
-      padding: 8px;
-      font-size: 0.75rem;
-      font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
-      text-align: center;
-      transition: background 0.2s;
-    }
-    .btn-upload:hover { background: rgba(255, 152, 0, 0.25); }
-    #fileInput { display: none; }
-    #loadingText {
-      font-size: 0.7rem;
-      color: #ff9800;
-      text-align: center;
-      margin-top: 4px;
-      display: none;
-    }
-
     .creator-credit {
       text-align: right;
       font-size: 0.65rem;
       color: #6c757d;
-      margin-top: 8px;
+      margin-top: 10px;
       font-style: italic;
     }
 
@@ -359,21 +328,6 @@
             </div>
           </div>
         </div>
-
-        <div class="upload-section">
-          <div style="display: flex; gap: 8px; margin-bottom: 6px;">
-            <label style="font-size: 0.7rem; color: #8c93a8; display: flex; align-items: center; gap: 4px; cursor: pointer;">
-              <input type="radio" name="destinoUpload" value="act" checked> Cargar a Roll Actual
-            </label>
-            <label style="font-size: 0.7rem; color: #ffb74d; display: flex; align-items: center; gap: 4px; cursor: pointer;">
-              <input type="radio" name="destinoUpload" value="nue"> Cargar a Nuevo Roll
-            </label>
-          </div>
-          <label for="fileInput" class="btn-upload">📷 Subir captura de orbe (Autodetecta Tipo y Valor)</label>
-          <input type="file" id="fileInput" accept="image/*" onchange="procesarCapturaStats(event)">
-          <div id="loadingText">Leyendo stats y tipos de la orbe... Por favor espera 🔍</div>
-        </div>
-
         <div class="creator-credit">Made by Christenzen</div>
       </div>
 
@@ -573,87 +527,6 @@
           etiqueta.style.color = '#e57373'; 
         }
       }
-    });
-  }
-
-  function detectarTipoStat(lineaTexto) {
-    const t = lineaTexto.toLowerCase();
-    if (t.includes('fuego') && t.includes('ataque')) return 'atkFuego';
-    if (t.includes('fuego') && t.includes('daño')) return 'dmgFuego';
-    if (t.includes('ráfagas') || t.includes('rafagas')) return 'rafagaFuego';
-    if (t.includes('probabilidad') && t.includes('crítico')) return 'probCrit';
-    if (t.includes('daño crítico') || t.includes('dano critico')) return 'dmgCrit';
-    if (t.includes('especial')) return 'dmgEspecial';
-    if (t.includes('definitiva')) return 'dmgDefinitiva';
-    if (t.includes('relevo')) return 'dmgRelevo';
-    if (t.includes('carga mágica') || t.includes('carga magica')) return 'cargaMagica';
-    if (t.includes('normales') && t.includes('ataques')) return 'dmgNormal';
-    if (t.includes('normales') && t.includes('habilidades')) return 'dmgHabNormal';
-    if (t.includes('recuperación') || t.includes('recuperacion')) return 'cdr';
-    if (t.includes('defensa') && !t.includes('crítica')) return 'defensa';
-    if (t.includes('ps')) return 'ps';
-    if (t.includes('resistencia crítica')) return 'resCrit';
-    if (t.includes('defensa crítica')) return 'defCrit';
-    return null;
-  }
-
-  function procesarCapturaStats(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const destinoSelecto = document.querySelector('input[name="destinoUpload"]:checked').value;
-    const loadingText = document.getElementById('loadingText');
-    loadingText.style.display = 'block';
-
-    Tesseract.recognize(file, 'eng+spa', { 
-      logger: m => console.log(m) 
-    }).then(({ data: { text } }) => {
-      loadingText.style.display = 'none';
-      
-      const lineas = text.split('\n').filter(l => l.trim().length > 0);
-      let statIndex = 1;
-
-      lineas.forEach(linea => {
-        if (statIndex > 4) return;
-        
-        const numsMatch = linea.match(/\d+([.,]\d+)?/g);
-        if (numsMatch && numsMatch.length > 0) {
-          let valorStr = numsMatch[0].replace(',', '.');
-          let valorNum = parseFloat(valorStr);
-
-          if (!valorStr.includes('.') && valorNum > 99) {
-            valorNum = valorNum / 100;
-          }
-
-          if (valorNum > 50) {
-            valorNum = 18.00; 
-          }
-
-          valorNum = Math.round(valorNum * 100) / 100;
-
-          const tipoDetectado = detectarTipoStat(linea);
-
-          document.getElementById(`${destinoSelecto}${statIndex}`).value = valorNum;
-
-          if (tipoDetectado) {
-            document.getElementById(`s${statIndex}_${destinoSelecto}`).value = tipoDetectado;
-          }
-
-          statIndex++;
-        }
-      });
-
-      actualizarPorcentajes();
-
-      if (statIndex > 1) {
-        alert(`¡Captura cargada con éxito en el ${destinoSelecto === 'act' ? 'Roll Actual' : 'Nuevo Roll'}!`);
-      } else {
-        alert("No se pudieron extraer datos legibles. Intenta con una imagen más clara.");
-      }
-    }).catch(err => {
-      loadingText.style.display = 'none';
-      console.error(err);
-      alert("Error al procesar la imagen.");
     });
   }
 
