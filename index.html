@@ -1,1 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora 7DS: Origin - Optimidad de CP</title>
+    <style>
+        :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --accent: #238636; --danger: #da3633; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; }
+        .app { max-width: 500px; margin: 0 auto; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+        h1 { font-size: 1.2rem; text-align: center; color: #f0f6fc; margin-top: 0; }
+        .section-title { font-size: 0.9rem; text-transform: uppercase; color: #8b949e; margin: 15px 0 8px 0; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        label { display: block; font-size: 0.75rem; color: #8b949e; margin-top: 6px; }
+        input { width: 100%; box-sizing: border-box; background: #010409; border: 1px solid var(--border); color: #fff; padding: 8px; border-radius: 6px; font-size: 0.9rem; }
+        input:focus { border-color: #58a6ff; outline: none; }
+        button { width: 100%; margin-top: 20px; padding: 12px; background: #1f6feb; border: none; color: white; font-weight: bold; border-radius: 6px; font-size: 1rem; cursor: pointer; }
+        button:active { background: #388bfd; }
+        #veredicto { margin-top: 15px; padding: 15px; border-radius: 6px; text-align: center; font-weight: bold; font-size: 1.1rem; display: none; }
+        .status-ok { background: rgba(35, 134, 54, 0.2); border: 1px solid var(--accent); color: #3fb950; }
+        .status-bad { background: rgba(218, 54, 51, 0.2); border: 1px solid var(--danger); color: #f85149; }
+    </style>
+</head>
+<body>
+
+<div class="app">
+    <h1>7DS: Origin - Evaluador de Encantamientos</h1>
+    
+    <label>Ataque Base del Personaje (Ej. Escanor: 24856)</label>
+    <input type="number" id="atqBase" value="24856">
+
+    <div class="grid-2">
+        <div>
+            <div class="section-title">Actual</div>
+            <label>Ataque Fuego %</label>
+            <input type="number" id="atqFuegoAct" value="33.76" step="0.01">
+            <label>Ataque General %</label>
+            <input type="number" id="atqGenAct" value="0" step="0.01">
+            <label>Prob. Crítica %</label>
+            <input type="number" id="probAct" value="7.79" step="0.01">
+            <label>Daño Crítico %</label>
+            <input type="number" id="danoCritAct" value="15.79" step="0.01">
+            <label>Daño Hab. Normales %</label>
+            <input type="number" id="habAct" value="16.73" step="0.01">
+        </div>
+
+        <div>
+            <div class="section-title">Nuevo</div>
+            <label>Ataque Fuego %</label>
+            <input type="number" id="atqFuegoNue" value="33.76" step="0.01">
+            <label>Ataque General %</label>
+            <input type="number" id="atqGenNue" value="0" step="0.01">
+            <label>Prob. Crítica %</label>
+            <input type="number" id="probNue" value="0" step="0.01">
+            <label>Daño Crítico %</label>
+            <input type="number" id="danoCritNue" value="0" step="0.01">
+            <label>Daño Hab. Normales %</label>
+            <input type="number" id="habNue" value="0" step="0.01">
+        </div>
+    </div>
+
+    <button onclick="evaluar()">EVALUAR EN PANTALLA</button>
+
+    <div id="veredicto"></div>
+</div>
+
+<script>
+function evaluar() {
+    const base = parseFloat(document.getElementById('atqBase').value) || 0;
+
+    // Métricas Actuales
+    const atqA = (parseFloat(document.getElementById('atqFuegoAct').value)||0) + (parseFloat(document.getElementById('atqGenAct').value)||0);
+    const pCritA = parseFloat(document.getElementById('probAct').value)||0;
+    const dCritA = parseFloat(document.getElementById('danoCritAct').value)||0;
+    const habA = parseFloat(document.getElementById('habAct').value)||0;
+
+    // Métricas Nuevas
+    const atqN = (parseFloat(document.getElementById('atqFuegoNue').value)||0) + (parseFloat(document.getElementById('atqGenNue').value)||0);
+    const pCritN = parseFloat(document.getElementById('probNue').value)||0;
+    const dCritN = parseFloat(document.getElementById('danoCritNue').value)||0;
+    const habN = parseFloat(document.getElementById('habNue').value)||0;
+
+    // Multiplicador Vectorial (Atq * Crítico * Bono Habilidad)
+    const fcA = 1 + ((pCritA/100) * (dCritA/100));
+    const scoreA = base * (1 + (atqA/100)) * fcA * (1 + (habA/100));
+
+    const fcN = 1 + ((pCritN/100) * (dCritN/100));
+    const scoreN = base * (1 + (atqN/100)) * fcN * (1 + (habN/100));
+
+    const box = document.getElementById('veredicto');
+    box.style.display = 'block';
+
+    if (scoreN > scoreA) {
+        box.className = 'status-ok';
+        box.innerHTML = '✔ ¡APLICAR! La tirada es una mejora real de poder.';
+    } else {
+        box.className = 'status-bad';
+        box.innerHTML = '✖ ¡MANTENER! Perderás poder de equipo si aplicas.';
+    }
+}
+</script>
+</body>
+</html>
 
