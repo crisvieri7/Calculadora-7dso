@@ -1,188 +1,451 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora 7DS: Origin - CP Estimado</title>
-    <style>
-        :root { 
-            --bg: #090a0f; 
-            --card: rgba(22, 27, 34, 0.85); 
-            --border: #30363d; 
-            --text: #c9d1d9; 
-            --accent: #238636; 
-            --danger: #da3633; 
-            --fire: #ff5500;
-        }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            background: var(--bg); 
-            color: var(--text); 
-            margin: 0; 
-            padding: 15px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-image: 
-                radial-gradient(circle at 50% 100%, rgba(255, 85, 0, 0.25) 0%, rgba(255, 140, 0, 0.1) 40%, rgba(9, 10, 15, 0) 70%),
-                radial-gradient(circle at 20% 20%, rgba(255, 60, 0, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 80% 30%, rgba(255, 120, 0, 0.12) 0%, transparent 40%);
-            background-attachment: fixed;
-        }
-        .app { 
-            width: 100%;
-            max-width: 500px; 
-            background: var(--card); 
-            border: 1px solid var(--border); 
-            border-radius: 12px; 
-            padding: 20px; 
-            box-shadow: 0 8px 32px rgba(255, 85, 0, 0.15), 0 0 15px rgba(0,0,0,0.8); 
-            backdrop-filter: blur(8px);
-            box-sizing: border-box;
-        }
-        h1 { 
-            font-size: 1.2rem; 
-            text-align: center; 
-            color: #fff; 
-            margin-top: 0; 
-            text-shadow: 0 0 10px rgba(255, 85, 0, 0.5);
-            letter-spacing: 0.5px;
-        }
-        .section-title { 
-            font-size: 0.85rem; 
-            text-transform: uppercase; 
-            color: #ff9966; 
-            margin: 15px 0 8px 0; 
-            border-bottom: 1px solid rgba(255, 85, 0, 0.3); 
-            padding-bottom: 4px; 
-            font-weight: bold;
-        }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        label { display: block; font-size: 0.75rem; color: #8b949e; margin-top: 6px; }
-        input { 
-            width: 100%; 
-            box-sizing: border-box; 
-            background: #010409; 
-            border: 1px solid var(--border); 
-            color: #fff; 
-            padding: 8px; 
-            border-radius: 6px; 
-            font-size: 0.9rem; 
-            transition: all 0.2s;
-        }
-        input:focus { border-color: #ff5500; outline: none; box-shadow: 0 0 8px rgba(255, 85, 0, 0.4); }
-        button { 
-            width: 100%; 
-            margin-top: 20px; 
-            padding: 12px; 
-            background: linear-gradient(135deg, #ff5500 0%, #cc2b00 100%); 
-            border: none; 
-            color: white; 
-            font-weight: bold; 
-            border-radius: 6px; 
-            font-size: 1rem; 
-            cursor: pointer; 
-            box-shadow: 0 4px 12px rgba(255, 85, 0, 0.3);
-            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-        }
-        button:active { transform: scale(0.98); }
-        #veredicto { margin-top: 15px; padding: 15px; border-radius: 6px; text-align: center; font-weight: bold; display: none; }
-        .status-ok { background: rgba(35, 134, 54, 0.25); border: 1px solid var(--accent); color: #3fb950; }
-        .status-bad { background: rgba(218, 54, 51, 0.25); border: 1px solid var(--danger); color: #f85149; }
-        .cp-val { font-size: 1.3rem; margin-top: 8px; display: block; }
-        .footer {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 0.8rem;
-            color: #8b949e;
-            letter-spacing: 1px;
-        }
-        .footer span {
-            color: #ff7733;
-            font-weight: bold;
-            text-shadow: 0 0 5px rgba(255, 85, 0, 0.4);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Orbes - SøulEaters</title>
+  <style>
+    :root {
+      --bg-dark: #0d0f17;
+      --card-bg: rgba(22, 27, 46, 0.85);
+      --purple-glow: #9d4edd;
+      --fire-glow: #ff5400;
+      --text-main: #f1f5f9;
+      --accent-green: #00f5d4;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    /* Video Intro Screen Overlay */
+    #intro-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+
+    #intro-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.7);
+    }
+
+    /* Central Enter Button Overlay */
+    .enter-overlay {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      z-index: 10000;
+    }
+
+    .enter-btn {
+      padding: 16px 45px;
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+      color: #fff;
+      background: linear-gradient(135deg, #ff5400, #9d4edd);
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 0 25px rgba(255, 84, 0, 0.8), 0 0 40px rgba(157, 78, 221, 0.6);
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
+
+    .enter-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 35px rgba(255, 84, 0, 1), 0 0 50px rgba(157, 78, 221, 0.9);
+      background: linear-gradient(135deg, #9d4edd, #ff5400);
+    }
+
+    .fade-out {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    /* Header & Credits */
+    header {
+      text-align: center;
+      margin: 25px 0 15px 0;
+    }
+
+    .clan-title {
+      font-size: 2.5rem;
+      letter-spacing: 2px;
+      color: #fff;
+      text-shadow: 0 0 10px var(--purple-glow), 0 0 20px var(--fire-glow);
+    }
+
+    .credits {
+      font-size: 0.95rem;
+      color: #94a3b8;
+      margin-top: 5px;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 900px;
+      margin-bottom: 40px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Home Selector Cards */
+    .orb-selector {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 25px;
+    }
+
+    .orb-card {
+      background: var(--card-bg);
+      border-radius: 15px;
+      padding: 25px;
+      text-align: center;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .orb-card.heroic {
+      border-color: rgba(157, 78, 221, 0.4);
+    }
+
+    .orb-card.heroic:hover {
+      border-color: var(--purple-glow);
+      box-shadow: 0 0 25px rgba(157, 78, 221, 0.6);
+      transform: translateY(-5px);
+    }
+
+    .orb-card.legendary {
+      border-color: rgba(255, 84, 0, 0.4);
+    }
+
+    .orb-card.legendary:hover {
+      border-color: var(--fire-glow);
+      box-shadow: 0 0 25px rgba(255, 84, 0, 0.6);
+      transform: translateY(-5px);
+    }
+
+    .orb-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin: 0 auto 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+    }
+
+    .heroic .orb-icon { background: radial-gradient(circle, #c77dff, #3c096c); }
+    .legendary .orb-icon { background: radial-gradient(circle, #ff9e00, #9d0208); }
+
+    /* Calculator View */
+    .calc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .back-btn {
+      padding: 10px 18px;
+      background: #334155;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+
+    .back-btn:hover { background: #475569; }
+
+    .slot-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+      border: 1px solid #334155;
+    }
+
+    .slot-title {
+      font-weight: bold;
+      margin-bottom: 12px;
+      color: #cbd5e1;
+    }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    select, input {
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #475569;
+      background: #1e293b;
+      color: #fff;
+      font-size: 0.95rem;
+    }
+
+    /* Dynamic Results Bar */
+    .quality-container {
+      margin-top: 20px;
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .bar-bg {
+      width: 100%;
+      height: 16px;
+      background: #334155;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ff4d4d, #ffdb4d, var(--accent-green));
+      transition: width 0.4s ease;
+    }
+
+    .cp-display {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--accent-green);
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
 
-<div class="app">
-    <h1>🔥 7DS: Origin - Estimador de CP</h1>
+  <!-- Video Intro Overlay -->
+  <div id="intro-screen">
+    <!-- Reemplaza el 'src' con el video corto de Ban en 7DS: Origin / Grand Cross -->
+    <video id="intro-video" autoplay loop muted playsinline>
+      <source src="https://assets.mixkit.co/videos/preview/mixkit-anime-character-with-glowing-eyes-41562-large.mp4" type="video/mp4">
+    </video>
     
-    <label>Poder de Equipo Actual (CP de Pantalla)</label>
-    <input type="number" id="cpActual" value="138503">
+    <div class="enter-overlay">
+      <button class="enter-btn" onclick="enterSite()">ENTRAR</button>
+    </div>
+  </div>
 
-    <div class="grid-2">
-        <div>
-            <div class="section-title">Stats Actuales</div>
-            <label>Prob. Crítica %</label>
-            <input type="number" id="probAct" value="7.79" step="0.01">
-            <label>Ataque Fuego %</label>
-            <input type="number" id="atqFuegoAct" value="33.76" step="0.01">
-            <label>Daño Crítico %</label>
-            <input type="number" id="danoCritAct" value="15.79" step="0.01">
-            <label>Daño Hab. Normales %</label>
-            <input type="number" id="habAct" value="16.73" step="0.01">
+  <!-- Header -->
+  <header>
+    <h1 class="clan-title">Clan SøulEaters</h1>
+    <p class="credits">Creado por <strong>Christenzen</strong></p>
+  </header>
+
+  <div class="container">
+    
+    <!-- Home / Selector View -->
+    <div id="home-view">
+      <h2 style="text-align: center; margin-bottom: 5px;">Selecciona el Tipo de Orbe</h2>
+      <div class="orb-selector">
+        
+        <div class="orb-card heroic" onclick="openCalc('heroic')">
+          <div class="orb-icon">🔮</div>
+          <h3>Orbe de Hechizo Heroico</h3>
+          <p style="color: #a78bfa; margin-top: 5px; font-weight: bold;">3 Ranuras de Encantamiento</p>
+          <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 10px;">Stats Fijas + Sub-stats Porcentuales</p>
         </div>
 
-        <div>
-            <div class="section-title">Stats Nuevas</div>
-            <label>Prob. Crítica %</label>
-            <input type="number" id="probNue" value="0" step="0.01">
-            <label>Ataque Fuego %</label>
-            <input type="number" id="atqFuegoNue" value="47.29" step="0.01">
-            <label>Daño Crítico %</label>
-            <input type="number" id="danoCritNue" value="25.82" step="0.01">
-            <label>Daño Hab. Especiales %</label>
-            <input type="number" id="habNue" value="23.34" step="0.01">
+        <div class="orb-card legendary" onclick="openCalc('legendary')">
+          <div class="orb-icon">🔥</div>
+          <h3>Orbe Legendario de Fuego</h3>
+          <p style="color: #ff8533; margin-top: 5px; font-weight: bold;">4 Ranuras de Encantamiento</p>
+          <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 10px;">Incluye Ataque/Daño Elemental de Fuego %</p>
         </div>
+
+      </div>
     </div>
 
-    <button onclick="evaluar()">CALCULAR NUEVO PODER</button>
+    <!-- Calculator View -->
+    <div id="calc-view" class="hidden">
+      <div class="calc-header">
+        <button class="back-btn" onclick="goHome()">← Volver al Inicio</button>
+        <h2 id="calc-title">Calculadora</h2>
+      </div>
 
-    <div id="veredicto"></div>
+      <div id="slots-container"></div>
 
-    <div class="footer">
-        Hecho por <span>Crisvieri</span>
+      <!-- Quality & CP Results -->
+      <div class="quality-container">
+        <h3>Calidad Total del Roll (% Perfección)</h3>
+        <div class="bar-bg">
+          <div id="quality-bar" class="bar-fill"></div>
+        </div>
+        <p id="quality-text" style="margin-top: 8px; font-weight: bold;">0%</p>
+
+        <h3 style="margin-top: 20px;">Aumento Estimado de Ataque / CP</h3>
+        <div id="cp-text" class="cp-display">+0 AP</div>
+      </div>
     </div>
-</div>
 
-<script>
-function evaluar() {
-    const cpBase = parseFloat(document.getElementById('cpActual').value) || 0;
+  </div>
 
-    // Métricas Actuales
-    const pCritA = parseFloat(document.getElementById('probAct').value)||0;
-    const atqA = parseFloat(document.getElementById('atqFuegoAct').value)||0;
-    const dCritA = parseFloat(document.getElementById('danoCritAct').value)||0;
-    const habA = parseFloat(document.getElementById('habAct').value)||0;
-
-    // Métricas Nuevas
-    const pCritN = parseFloat(document.getElementById('probNue').value)||0;
-    const atqN = parseFloat(document.getElementById('atqFuegoNue').value)||0;
-    const dCritN = parseFloat(document.getElementById('danoCritNue').value)||0;
-    const habN = parseFloat(document.getElementById('habNue').value)||0;
-
-    // Ponderación de CP usada por el juego
-    const factorCP_A = 1 + (pCritA * 0.012) + (atqA * 0.008) + (dCritA * 0.004) + (habA * 0.002);
-    const factorCP_N = 1 + (pCritN * 0.012) + (atqN * 0.008) + (dCritN * 0.004) + (habN * 0.002);
-
-    const cpEstimado = Math.round((cpBase / factorCP_A) * factorCP_N);
-    const diferencia = cpEstimado - cpBase;
-
-    const box = document.getElementById('veredicto');
-    box.style.display = 'block';
-
-    if (diferencia >= 0) {
-        box.className = 'status-ok';
-        box.innerHTML = `✔ ¡TIRADA POSITIVA!<span class="cp-val">Nuevo CP Estimado: ${cpEstimado.toLocaleString()} (+${diferencia.toLocaleString()})</span>`;
-    } else {
-        box.className = 'status-bad';
-        box.innerHTML = `✖ ¡PERDERÁS PODER DE EQUIPO!<span class="cp-val">Nuevo CP Estimado: ${cpEstimado.toLocaleString()} (${diferencia.toLocaleString()})</span>`;
+  <script>
+    function enterSite() {
+      const intro = document.getElementById('intro-screen');
+      intro.classList.add('fade-out');
+      setTimeout(() => {
+        intro.style.display = 'none';
+      }, 800);
     }
-}
-</script>
+
+    // Databases
+    const heroicStats = {
+      "Ataque de equipo": { min: 484, max: 832, flat: true },
+      "Defensa de equipo": { min: 387, max: 663, flat: true },
+      "PS de equipo": { min: 967, max: 1657, flat: true },
+      "Daño de ataques normales %": { min: 10.83, max: 18.57, flat: false },
+      "Daño de habilidades normales %": { min: 7.59, max: 13.05, flat: false },
+      "Probabilidad de crítico %": { min: 3.53, max: 6.05, flat: false },
+      "Daño crítico %": { min: 6.24, max: 10.74, flat: false }
+    };
+
+    const legendaryStats = {
+      "Aumento del ataque de fuego %": { min: 26.26, max: 43.76, flat: false },
+      "Aumento del daño de fuego %": { min: 11.35, max: 18.98, flat: false },
+      "Daño de ataques normales %": { min: 18.56, max: 30.95, flat: false },
+      "Daño de habilidades normales %": { min: 13.01, max: 21.69, flat: false },
+      "Probabilidad de crítico %": { min: 6.05, max: 10.11, flat: false },
+      "Daño crítico %": { min: 10.69, max: 17.83, flat: false }
+    };
+
+    let currentType = '';
+    let maxSlots = 3;
+
+    function openCalc(type) {
+      currentType = type;
+      maxSlots = type === 'heroic' ? 3 : 4;
+      document.getElementById('calc-title').innerText = type === 'heroic' ? 'Orbe Heroico (3 Ranuras)' : 'Orbe Legendario de Fuego (4 Ranuras)';
+      document.getElementById('home-view').classList.add('hidden');
+      document.getElementById('calc-view').classList.remove('hidden');
+      buildSlots();
+    }
+
+    function goHome() {
+      document.getElementById('calc-view').classList.add('hidden');
+      document.getElementById('home-view').classList.remove('hidden');
+    }
+
+    function buildSlots() {
+      const container = document.getElementById('slots-container');
+      container.innerHTML = '';
+      const statsList = currentType === 'heroic' ? heroicStats : legendaryStats;
+
+      for (let i = 1; i <= maxSlots; i++) {
+        const card = document.createElement('div');
+        card.className = 'slot-card';
+        
+        let options = '';
+        for (let stat in statsList) {
+          options += `<option value="${stat}">${stat}</option>`;
+        }
+
+        card.innerHTML = `
+          <div class="slot-title">Ranura de Encantamiento ${i}</div>
+          <div class="stat-row">
+            <select id="stat-select-${i}" onchange="calculate()">${options}</select>
+            <input type="number" id="stat-val-${i}" value="0" step="0.01" 
+                   onfocus="clearInput(this)" onblur="restoreInput(this)" oninput="calculate()">
+            <span id="range-label-${i}" style="font-size: 0.85rem; color: #94a3b8;"></span>
+          </div>
+        `;
+        container.appendChild(card);
+      }
+      calculate();
+    }
+
+    // Auto-clear 0 on Focus
+    function clearInput(input) {
+      if (input.value === '0') input.value = '';
+    }
+
+    function restoreInput(input) {
+      if (input.value === '') input.value = '0';
+    }
+
+    // Calculation Engine
+    function calculate() {
+      const statsList = currentType === 'heroic' ? heroicStats : legendaryStats;
+      let totalPerc = 0;
+      let totalFlatAtk = 0;
+
+      for (let i = 1; i <= maxSlots; i++) {
+        const select = document.getElementById(`stat-select-${i}`);
+        const input = document.getElementById(`stat-val-${i}`);
+        const label = document.getElementById(`range-label-${i}`);
+
+        if (!select || !input) continue;
+
+        const statName = select.value;
+        const val = parseFloat(input.value) || 0;
+        const config = statsList[statName];
+
+        label.innerText = `[${config.min} ~ ${config.max}]`;
+
+        let rollQuality = (val - config.min) / (config.max - config.min);
+        if (rollQuality < 0) rollQuality = 0;
+        if (rollQuality > 1) rollQuality = 1;
+
+        totalPerc += rollQuality;
+
+        if (statName === "Ataque de equipo") {
+          totalFlatAtk += val;
+        } else if (statName.includes("ataque de fuego")) {
+          totalFlatAtk += val * 22;
+        }
+      }
+
+      const finalQuality = Math.round((totalPerc / maxSlots) * 100);
+      document.getElementById('quality-bar').style.width = `${finalQuality}%`;
+      document.getElementById('quality-text').innerText = `${finalQuality}% de Eficiencia`;
+      
+      const estimatedCP = Math.round(totalFlatAtk + (finalQuality * 15));
+      document.getElementById('cp-text').innerText = `+${estimatedCP} Ataque Est.`;
+    }
+  </script>
 </body>
 </html>
+
