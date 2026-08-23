@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Escanor - Calculadora & Evaluación de Encantamientos</title>
+  <!-- Tesseract.js para leer texto de capturas -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -24,7 +26,7 @@
       position: relative;
     }
 
-    /* PANTALLA DE BIENVENIDA (SPLASH SCREEN) */
+    /* PANTALLA DE BIENVENIDA */
     #splashScreen {
       display: flex;
       flex-direction: column;
@@ -54,7 +56,7 @@
       border: 3px solid #ff9800;
       box-shadow: 0 0 20px rgba(255, 152, 0, 0.5);
       overflow: hidden;
-      background: #281a08 url('IMG_2253.jpeg') center 20% / cover no-repeat; /* Encuadre superior centrado */
+      background: #281a08 url('IMG_2253.jpeg') center 20% / cover no-repeat;
     }
 
     .btn-enter {
@@ -88,7 +90,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* TARJETA DE PERFIL EDITABLE */
+    /* PERFIL EDITABLE */
     .hero-card {
       background: rgba(16, 18, 26, 0.95);
       border: 1px solid rgba(255, 152, 0, 0.3);
@@ -137,7 +139,7 @@
       height: 70px;
       border-radius: 50%;
       border: 2px solid #ff9800;
-      background: #281a08 url('IMG_2253.jpeg') center/cover no-repeat;
+      background: #281a08 url('IMG_2253.jpeg') center 20% / cover no-repeat;
       box-shadow: 0 0 10px rgba(255, 152, 0, 0.4);
       flex-shrink: 0;
     }
@@ -176,17 +178,26 @@
       gap: 6px;
     }
     .btn-upload {
-      background: rgba(255, 152, 0, 0.1);
-      border: 1px dashed rgba(255, 152, 0, 0.4);
+      background: rgba(255, 152, 0, 0.15);
+      border: 1px dashed rgba(255, 152, 0, 0.6);
       color: #ffb74d;
-      padding: 6px;
-      font-size: 0.7rem;
+      padding: 8px;
+      font-size: 0.75rem;
       font-weight: bold;
       border-radius: 6px;
       cursor: pointer;
       text-align: center;
+      transition: background 0.2s;
     }
+    .btn-upload:hover { background: rgba(255, 152, 0, 0.25); }
     #fileInput { display: none; }
+    #loadingText {
+      font-size: 0.7rem;
+      color: #ff9800;
+      text-align: center;
+      margin-top: 4px;
+      display: none;
+    }
 
     .creator-credit {
       text-align: right;
@@ -196,7 +207,7 @@
       font-style: italic;
     }
 
-    /* TARJETA DE EVALUACIÓN */
+    /* EVALUADOR DE ENCANTAMIENTOS */
     .calc-card {
       background: rgba(16, 18, 26, 0.95);
       border: 1px solid rgba(230, 81, 0, 0.3);
@@ -288,8 +299,8 @@
       display: none;
     }
     .result-title { font-weight: bold; font-size: 0.85rem; margin-bottom: 2px; }
-    .result-value { font-size: 0.95rem; font-weight: bold; }
-    .escanor-note { font-size: 0.72rem; margin-top: 5px; opacity: 0.9; }
+    .result-value { font-size: 0.95rem; font-weight: bold; margin-bottom: 4px; }
+    .escanor-note { font-size: 0.72rem; margin-top: 5px; opacity: 0.9; line-height: 1.3; }
   </style>
 </head>
 <body>
@@ -337,8 +348,9 @@
         </div>
 
         <div class="upload-section">
-          <label for="fileInput" class="btn-upload">📷 (Opcional) Cambiar foto de perfil / captura</label>
-          <input type="file" id="fileInput" accept="image/*" onchange="cargarCaptura(event)">
+          <label for="fileInput" class="btn-upload">📷 Subir captura para autocompletar stats</label>
+          <input type="file" id="fileInput" accept="image/*" onchange="procesarCapturaStats(event)">
+          <div id="loadingText">Leyendo captura de pantalla... Por favor espera 🔍</div>
         </div>
 
         <div class="creator-credit">Made by Christenzen</div>
@@ -346,12 +358,12 @@
 
       <!-- EVALUADOR DE ENCANTAMIENTOS -->
       <div class="calc-card">
-        <div class="section-title">Evaluador de Encantamientos (Hacha)</div>
+        <div class="section-title">Evaluador de Encantamientos (Orbe / Pieza)</div>
 
         <div class="comparison-container">
           <!-- ACTUAL -->
           <div class="column-panel">
-            <div class="panel-title act">Hacha Actual</div>
+            <div class="panel-title act">Roll Actual</div>
             <div class="stat-box"><select id="s1_act"></select><input type="number" step="0.01" class="stat-input" id="act1" value="13.53"></div>
             <div class="stat-box"><select id="s2_act"></select><input type="number" step="0.01" class="stat-input" id="act2" value="33.76"></div>
             <div class="stat-box"><select id="s3_act"></select><input type="number" step="0.01" class="stat-input" id="act3" value="8.95"></div>
@@ -362,7 +374,7 @@
 
           <!-- NUEVO -->
           <div class="column-panel">
-            <div class="panel-title nue">Nuevo Roll</div>
+            <div class="panel-title nue">Nuevo Roll (Orbe)</div>
             <div class="stat-box"><select id="s1_nue"></select><input type="number" step="0.01" class="stat-input new-value" id="nue1" value="13.53"></div>
             <div class="stat-box"><select id="s2_nue"></select><input type="number" step="0.01" class="stat-input new-value" id="nue2" value="33.76"></div>
             <div class="stat-box"><select id="s3_nue"></select><input type="number" step="0.01" class="stat-input new-value" id="nue3" value="12.00"></div>
@@ -372,7 +384,7 @@
 
         <div class="action-buttons">
           <button type="button" class="btn-reset" onclick="copiarActual()">Copiar Actual</button>
-          <button type="button" class="btn-calc" onclick="calcular()">Evaluar Roll</button>
+          <button type="button" class="btn-calc" onclick="calcular()">Evaluar Orbe</button>
         </div>
 
         <div id="resultado" class="result-box">
@@ -440,12 +452,37 @@
     document.getElementById('s4_nue').value = 'dmgEspecial';
   }
 
-  function cargarCaptura(event) {
+  function procesarCapturaStats(event) {
     const file = event.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      document.getElementById('avatarPreview').style.backgroundImage = `url('${imageUrl}')`;
-    }
+    if (!file) return;
+
+    const loadingText = document.getElementById('loadingText');
+    loadingText.style.display = 'block';
+
+    Tesseract.recognize(file, 'eng', { logger: m => console.log(m) }).then(({ data: { text } }) => {
+      loadingText.style.display = 'none';
+      const numerosEncontrados = text.match(/\d+([.,]\d+)?/g);
+
+      if (numerosEncontrados && numerosEncontrados.length > 0) {
+        const nums = numerosEncontrados.map(n => parseFloat(n.replace(',', '.')));
+        if (nums.length >= 1 && nums[0] > 1000) {
+          document.getElementById('baseCP').value = nums[0];
+          nums.shift();
+        }
+        if (nums[0] !== undefined) document.getElementById('baseAtqFuego').value = nums[0];
+        if (nums[1] !== undefined) document.getElementById('baseDmgFuego').value = nums[1];
+        if (nums[2] !== undefined) document.getElementById('baseProbCrit').value = nums[2];
+        if (nums[3] !== undefined) document.getElementById('baseDmgCrit').value = nums[3];
+
+        alert("¡Stats base leídas y actualizadas con éxito!");
+      } else {
+        alert("No se pudieron leer números claros. Intenta con otra imagen.");
+      }
+    }).catch(err => {
+      loadingText.style.display = 'none';
+      console.error(err);
+      alert("Error al procesar la imagen.");
+    });
   }
 
   function copiarActual() {
@@ -456,6 +493,9 @@
   }
 
   function calcular() {
+    let cpBase = parseFloat(document.getElementById('baseCP').value) || 0;
+    let atqBase = parseFloat(document.getElementById('baseAtqFuego').value) || 0;
+
     let pAct = 0, pNue = 0;
 
     for (let i = 1; i <= 4; i++) {
@@ -468,8 +508,11 @@
       pNue += vN * (pesosStats[tN] || 0);
     }
 
-    const dif = pNue - pAct;
-    const porcentajeCambio = ((dif / pAct) * 100).toFixed(1);
+    const difPuntaje = pNue - pAct;
+    const porcentajeCambio = ((difPuntaje / (pAct || 1)) * 100).toFixed(1);
+
+    let nuevoCPestimado = Math.round(cpBase + (difPuntaje * 12));
+    let nuevoAtqEstimado = (atqBase + (difPuntaje * 0.4)).toFixed(2);
 
     const resBox = document.getElementById('resultado');
     const resTitle = document.getElementById('tituloResultado');
@@ -478,32 +521,32 @@
 
     resBox.style.display = 'block';
 
-    if (dif > 0) {
+    if (difPuntaje > 0) {
       resBox.style.backgroundColor = '#112919';
       resBox.style.border = '1px solid #2e6d3e';
       resTitle.style.color = '#4caf50';
-      resTitle.innerText = '✓ ¡ACEPTAR NUEVO ENCANTAMIENTO!';
+      resTitle.innerText = '✓ ¡EQUIPA ESTA NUEVA ORBE!';
       resText.style.color = '#81c784';
-      resText.innerText = `Rendimiento DPS estimado: +${porcentajeCambio}%`;
+      resText.innerText = `Rendimiento de Orbe: +${porcentajeCambio}%`;
       resNota.style.color = '#a5d6a7';
-      resNota.innerText = 'Este roll aprovecha mejor tus multiplicadores de fuego y críticos.';
-    } else if (dif === 0) {
+      resNota.innerHTML = `Al cambiarla, tu equipo mejorará:<br><b>• CP Estimado:</b> ${cpBase} ➔ <b>${nuevoCPestimado}</b><br><b>• Atq. Fuego:</b> ${atqBase}% ➔ <b>${nuevoAtqEstimado}%</b><br>¡Excelente mejora hacia tu meta de 140k!`;
+    } else if (difPuntaje === 0) {
       resBox.style.backgroundColor = '#212631';
       resBox.style.border = '1px solid #4f5b75';
       resTitle.style.color = '#90caf9';
-      resTitle.innerText = 'EQUIVALENTE';
+      resTitle.innerText = 'ORBE EQUIVALENTE';
       resText.style.color = '#e3f2fd';
-      resText.innerText = 'El impacto en combate es prácticamente idéntico.';
-      resNota.innerText = '';
+      resText.innerText = 'El impacto de combate es idéntico.';
+      resNota.innerHTML = 'Tus estadísticas globales no sufrirán cambios significativos.';
     } else {
       resBox.style.backgroundColor = '#2d1414';
       resBox.style.border = '1px solid #6d2e2e';
       resTitle.style.color = '#e57373';
-      resTitle.innerText = '✕ DESCARTAR (MANTENER ACTUAL)';
+      resTitle.innerText = '✕ NO CAMBIAR (DESCARTAR ORBE)';
       resText.style.color = '#ef9a9a';
       resText.innerText = `Pérdida de rendimiento: ${porcentajeCambio}%`;
       resNota.style.color = '#ffab91';
-      resNota.innerText = 'No cambies Atq. Fuego o Daño Fuego a menos que ganes mucha Prob. Crítica.';
+      resNota.innerHTML = `Al cambiarla perderías efectividad:<br><b>• CP Proyectado bajaría a:</b> ~${nuevoCPestimado}<br>Quédate con tu orbe actual para no alejarte de tu meta.`;
     }
   }
 
