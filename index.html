@@ -5,23 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>7DS: Origin - Estimador de CP</title>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       background-color: #0f0f11;
-      /* Imagen de fondo de Ban con capa oscura */
+      /* Ajusta 'ban.png' si tu archivo de imagen tiene otro nombre o formato */
       background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), 
-                        url('https://images.alphacoders.com/861/861448.png');
+                        url('ban.png');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
       color: #ffffff;
-      font-family: Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      margin: 0;
       padding: 20px;
-      box-sizing: border-box;
     }
 
     .card {
@@ -30,7 +34,7 @@
       border-radius: 12px;
       padding: 24px;
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
       backdrop-filter: blur(8px);
     }
@@ -62,7 +66,6 @@
       border-radius: 6px;
       color: #fff;
       font-size: 0.95rem;
-      box-sizing: border-box;
       outline: none;
     }
 
@@ -144,10 +147,10 @@
 <div class="card">
   <div class="title">🔥 7DS: Origin - Estimador de CP</div>
 
-  <!-- Poder de Equipo Actual -->
+  <!-- Poder de Equipo Actual (CP de Pantalla) -->
   <div class="input-group">
     <label for="cpActual">Poder de Equipo Actual (CP de Pantalla)</label>
-    <input type="number" class="calc-trigger" id="cpActual" value="138503">
+    <input type="number" id="cpActual" value="138503">
   </div>
 
   <!-- Columnas de Stats -->
@@ -157,19 +160,19 @@
       <div class="section-title">STATS ACTUALES</div>
       <div class="input-group">
         <label>Prob. Crítica %</label>
-        <input type="number" step="0.01" class="calc-trigger" id="probCritAct" value="7.79">
+        <input type="number" step="0.01" id="probCritAct" value="7.79">
       </div>
       <div class="input-group">
         <label>Ataque Fuego %</label>
-        <input type="number" step="0.01" class="calc-trigger" id="atkFuegoAct" value="33.76">
+        <input type="number" step="0.01" id="atkFuegoAct" value="33.76">
       </div>
       <div class="input-group">
         <label>Daño Crítico %</label>
-        <input type="number" step="0.01" class="calc-trigger" id="dmgCritAct" value="15.79">
+        <input type="number" step="0.01" id="dmgCritAct" value="15.79">
       </div>
       <div class="input-group">
         <label>Daño Hab. Normales %</label>
-        <input type="number" step="0.01" class="calc-trigger" id="dmgNormAct" value="16.73">
+        <input type="number" step="0.01" id="dmgNormAct" value="16.73">
       </div>
     </div>
 
@@ -178,19 +181,19 @@
       <div class="section-title">STATS NUEVAS</div>
       <div class="input-group">
         <label>Prob. Crítica %</label>
-        <input type="number" step="0.01" class="calc-trigger" id="probCritNue" value="0">
+        <input type="number" step="0.01" id="probCritNue" value="0">
       </div>
       <div class="input-group">
         <label>Ataque Fuego %</label>
-        <input type="number" step="0.01" class="calc-trigger" id="atkFuegoNue" value="47.29">
+        <input type="number" step="0.01" id="atkFuegoNue" value="47.29">
       </div>
       <div class="input-group">
         <label>Daño Crítico %</label>
-        <input type="number" step="0.01" class="calc-trigger" id="dmgCritNue" value="25.82">
+        <input type="number" step="0.01" id="dmgCritNue" value="25.82">
       </div>
       <div class="input-group">
         <label>Daño Hab. Especiales %</label>
-        <input type="number" step="0.01" class="calc-trigger" id="dmgEspNue" value="23.34">
+        <input type="number" step="0.01" id="dmgEspNue" value="23.34">
       </div>
     </div>
   </div>
@@ -242,14 +245,12 @@
     }
   }
 
-  // Evento Enter para todos los inputs
-  document.querySelectorAll('.calc-trigger').forEach(input => {
-    input.addEventListener('keydown', function(event) {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        calcularCP();
-      }
-    });
+  // Escucha la tecla ENTER en toda la página para ejecutar la función
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      calcularCP();
+    }
   });
 </script>
 
