@@ -3,169 +3,116 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>7DS: Origin - Estimador de CP</title>
+  <title>7DS: Origin - Estimador de CP (Ofensivo)</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background-color: #0f0f11;
+      background-color: #0d0e12;
       color: #ffffff;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      padding: 12px;
     }
-
-    /* PANTALLA DE BIENVENIDA (LANDING) */
-    #welcome-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: #0d0d0f;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .welcome-img-container {
-      max-width: 90%;
-      max-height: 65vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 25px;
-    }
-
-    .welcome-img-container img {
-      width: 100%;
-      height: 100%;
-      max-height: 60vh;
-      object-fit: contain;
+    .game-card {
+      background: rgba(18, 20, 28, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-    }
-
-    .btn-start {
-      background-color: #e65100;
-      color: white;
-      border: none;
-      padding: 16px 40px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      border-radius: 30px;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      box-shadow: 0 4px 20px rgba(230, 81, 0, 0.5);
-      transition: transform 0.2s, background-color 0.2s;
-    }
-
-    .btn-start:active {
-      transform: scale(0.95);
-      background-color: #f57c00;
-    }
-
-    /* CONTENEDOR DE LA CALCULADORA */
-    #app-screen {
-      display: none;
+      padding: 20px 14px;
       width: 100%;
-      max-width: 440px;
+      max-width: 500px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.9);
     }
-
-    .app-bg {
-      background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), 
-                        url('IMG_2226.jpeg');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-    }
-
-    .card {
-      background-color: rgba(26, 26, 30, 0.92);
-      border: 1px solid #2d2d35;
-      border-radius: 12px;
-      padding: 20px;
-      width: 100%;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(8px);
-    }
-
-    .title {
-      font-size: 1.2rem;
-      font-weight: bold;
+    .game-title {
       text-align: center;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      color: #f0f0f5;
+    }
+    .cp-box {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 10px;
       margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-
-    .input-group {
-      margin-bottom: 10px;
-    }
-
-    label {
-      display: block;
-      font-size: 0.8rem;
-      color: #a0a0ab;
-      margin-bottom: 4px;
-      font-weight: 600;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 8px 10px;
-      background-color: #0d0d0f;
-      border: 1px solid #33333d;
-      border-radius: 6px;
+    .cp-box label { font-size: 0.8rem; color: #8f93a3; font-weight: 600; }
+    .cp-box input {
+      background: transparent;
+      border: none;
       color: #fff;
-      font-size: 0.88rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      text-align: right;
+      width: 120px;
       outline: none;
     }
-
-    input:focus, select:focus {
-      border-color: #ff7b3d;
+    .comparison-container {
+      display: grid;
+      grid-template-columns: 1fr 18px 1fr;
+      gap: 8px;
+      align-items: center;
     }
-
-    .stats-container {
+    .column-panel {
+      background: rgba(10, 12, 18, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 10px 8px;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      margin-top: 15px;
     }
-
-    .stat-row {
-      background-color: rgba(13, 13, 15, 0.6);
-      border: 1px solid #282830;
-      border-radius: 8px;
-      padding: 10px;
+    .panel-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 2px;
     }
-
-    .stat-row-title {
-      font-size: 0.78rem;
-      color: #ff7b3d;
+    .panel-title.act { color: #a0a5b8; }
+    .panel-title.nue { color: #78a1e8; }
+    .center-divider {
+      text-align: center;
+      color: #5d637a;
+      font-size: 1.1rem;
       font-weight: bold;
-      margin-bottom: 6px;
     }
-
-    .grid-2col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
+    .stat-box { display: flex; flex-direction: column; gap: 4px; }
+    select {
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 6px;
+      color: #e1e4ed;
+      font-size: 0.68rem;
+      padding: 5px 3px;
+      outline: none;
+      width: 100%;
+      text-overflow: ellipsis;
     }
-
+    input.stat-input {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      color: #ffffff;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 5px;
+      text-align: right;
+      outline: none;
+      width: 100%;
+    }
+    input.stat-input.new-value {
+      border-color: rgba(120, 161, 232, 0.4);
+      background: rgba(120, 161, 232, 0.08);
+    }
     .btn-calc {
       width: 100%;
-      background-color: #e65100;
+      background: #e65100;
       color: white;
       border: none;
       padding: 14px;
@@ -175,252 +122,158 @@
       cursor: pointer;
       margin-top: 16px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      transition: background-color 0.2s;
     }
-
-    .btn-calc:active {
-      background-color: #f57c00;
-    }
-
     .result-box {
-      margin-top: 16px;
+      margin-top: 14px;
       padding: 12px;
       border-radius: 8px;
       text-align: center;
       display: none;
     }
-
-    .result-title {
-      font-weight: bold;
-      font-size: 0.88rem;
-      margin-bottom: 4px;
-    }
-
-    .result-value {
-      font-size: 1.15rem;
-      font-weight: bold;
-    }
-
-    .footer {
-      text-align: center;
-      font-size: 0.78rem;
-      color: #70707a;
-      margin-top: 16px;
-    }
-
-    .footer span {
-      color: #ff7b3d;
-      font-weight: bold;
-    }
+    .result-title { font-weight: bold; font-size: 0.9rem; margin-bottom: 4px; }
+    .result-value { font-size: 1.15rem; font-weight: bold; }
   </style>
 </head>
 <body>
 
-  <!-- PANTALLA DE INICIO (PORTADA) -->
-  <div id="welcome-screen">
-    <div class="welcome-img-container">
-      <img src="IMG_2226.jpeg" alt="Ban - 7DS Origin">
+  <div class="game-card">
+    <div class="game-title">Resultados de encantamiento</div>
+
+    <div class="cp-box">
+      <label for="cpActual">CP Actual</label>
+      <input type="number" inputmode="decimal" id="cpActual" value="138503">
     </div>
-    <button class="btn-start" onclick="iniciarApp()">ENTER / INICIO</button>
-  </div>
 
-  <!-- CALCULADORA DE CP -->
-  <div id="app-screen">
-    <div class="card">
-      <div class="title">🔥 7DS: Origin - Estimador de Orbe</div>
+    <div class="comparison-container">
+      
+      <!-- BONIFICACIÓN ACTUAL -->
+      <div class="column-panel">
+        <div class="panel-title act">Bonificación actual</div>
 
-      <div class="input-group">
-        <label for="cpActual">Poder de Equipo Actual (CP)</label>
-        <input type="number" inputmode="decimal" id="cpActual" value="138503">
+        <div class="stat-box">
+          <select id="statType1_act" class="stat-select-act-1"></select>
+          <input type="number" inputmode="decimal" step="0.01" class="stat-input" id="act1" value="13.53">
+        </div>
+
+        <div class="stat-box">
+          <select id="statType2_act" class="stat-select-act-2"></select>
+          <input type="number" inputmode="decimal" step="0.01" class="stat-input" id="act2" value="33.76">
+        </div>
+
+        <div class="stat-box">
+          <select id="statType3_act" class="stat-select-act-3"></select>
+          <input type="number" inputmode="decimal" step="0.01" class="stat-input" id="act3" value="8.95">
+        </div>
+
+        <div class="stat-box">
+          <select id="statType4_act" class="stat-select-act-4"></select>
+          <input type="number" inputmode="decimal" step="0.01" class="stat-input" id="act4" value="23.34">
+        </div>
       </div>
 
-      <div class="stats-container">
-        
-        <!-- Slot 1 -->
-        <div class="stat-row">
-          <div class="stat-row-title">SLOT 1</div>
-          <div class="input-group">
-            <select id="statType1">
-              <option value="atkFuego">Aumento del ataque de tipo fuego %</option>
-              <option value="dmgFuego" selected>Aumento del daño de tipo fuego %</option>
-              <option value="dmgEsp">Aumento del daño de los ataques especiales %</option>
-              <option value="dmgNorm">Aumento del daño de los ataques normales %</option>
-              <option value="probCrit">Probabilidad de crítico %</option>
-              <option value="dmgCrit">Daño crítico %</option>
-              <option value="cargaMagica">Eficacia de la carga mágica %</option>
-              <option value="rafagasFuego">Eficacia de las Ráfagas de fuego %</option>
-              <option value="dmgHabNorm">Aumento del daño de las habilidades normales %</option>
-              <option value="dmgHabRelevo">Aumento del daño de las habilidades de relevo %</option>
-              <option value="dmgDefinitivos">Aumento del daño de los movimientos definitivos %</option>
-              <option value="cdr">Reducción del tiempo de recuperación %</option>
-              <option value="defensa">Aumento de la defensa %</option>
-              <option value="ps">Aumento de los PS %</option>
-              <option value="resCrit">Resistencia crítica %</option>
-              <option value="defCrit">Defensa crítica %</option>
-            </select>
-          </div>
-          <div class="grid-2col">
-            <div>
-              <label>Actual %</label>
-              <input type="number" inputmode="decimal" step="0.01" id="act1" value="13.53">
-            </div>
-            <div>
-              <label>Nuevo %</label>
-              <input type="number" inputmode="decimal" step="0.01" id="nue1" value="0">
-            </div>
-          </div>
+      <div class="center-divider">➾</div>
+
+      <!-- NUEVA BONIFICACIÓN -->
+      <div class="column-panel">
+        <div class="panel-title nue">Nueva bonificación</div>
+
+        <div class="stat-box">
+          <select id="statType1_nue" class="stat-select-nue-1"></select>
+          <input type="number" inputmode="decimal" step="0.01" class="stat-input new-value" id="nue1" value="13.25">
         </div>
 
-        <!-- Slot 2 -->
-        <div class="stat-row">
-          <div class="stat-row-title">SLOT 2</div>
-          <div class="input-group">
-            <select id="statType2">
-              <option value="atkFuego" selected>Aumento del ataque de tipo fuego %</option>
-              <option value="dmgFuego">Aumento del daño de tipo fuego %</option>
-              <option value="dmgEsp">Aumento del daño de los ataques especiales %</option>
-              <option value="dmgNorm">Aumento del daño de los ataques normales %</option>
-              <option value="probCrit">Probabilidad de crítico %</option>
-              <option value="dmgCrit">Daño crítico %</option>
-              <option value="cargaMagica">Eficacia de la carga mágica %</option>
-              <option value="rafagasFuego">Eficacia de las Ráfagas de fuego %</option>
-              <option value="dmgHabNorm">Aumento del daño de las habilidades normales %</option>
-              <option value="dmgHabRelevo">Aumento del daño de las habilidades de relevo %</option>
-              <option value="dmgDefinitivos">Aumento del daño de los movimientos definitivos %</option>
-              <option value="cdr">Reducción del tiempo de recuperación %</option>
-              <option value="defensa">Aumento de la defensa %</option>
-              <option value="ps">Aumento de los PS %</option>
-            </select>
-          </div>
-          <div class="grid-2col">
-            <div>
-              <label>Actual %</label>
-              <input type="number" inputmode="decimal" step="0.01" id="act2" value="33.76">
-            </div>
-            <div>
-              <label>Nuevo %</label>
-              <input type="number" inputmode="decimal" step="0.01" id="nue2" value="47.29">
-            </div>
-          </div>
+        <div class="stat-box">
+          <select id="statType2_nue" class="stat-select-nue-2"></select>
+          <input type="number" inputmode="decimal" step="0.01" class="stat-input new-value" id="nue2" value="14.07">
         </div>
 
-        <!-- Slot 3 -->
-        <div class="stat-row">
-          <div class="stat-row-title">SLOT 3</div>
-          <div class="input-group">
-            <select id="statType3">
-              <option value="cargaMagica" selected>Eficacia de la carga mágica %</option>
-              <option value="atkFuego">Aumento del ataque de tipo fuego %</option>
-              <option value="dmgFuego">Aumento del daño de tipo fuego %</option>
-              <option value="dmgEsp">Aumento del daño de los ataques especiales %</option>
-              <option value="dmgNorm">Aumento del daño de los ataques normales %</option>
-              <option value="probCrit">Probabilidad de crítico %</option>
-              <option value="dmgCrit">Daño crítico %</option>
-              <option value="rafagasFuego">Eficacia de las Ráfagas de fuego %</option>
-              <option value="dmgHabNorm">Aumento del daño de las habilidades normales %</option>
-              <option value="dmgHabRelevo">Aumento del daño de las habilidades de relevo %</option>
-              <option value="dmgDefinitivos">Aumento del daño de los movimientos definitivos %</option>
-              <option value="cdr">Reducción del tiempo de recuperación %</option>
-            </select>
-          </div>
-          <div class="grid-2col">
-            <div>
-              <label>Actual %</label>
-              <input type="number" inputmode="decimal" step="0.01" id="act3" value="8.95">
-            </div>
-            <div>
-              <label>Nuevo %</label>
-              <input type="number" inputmode="decimal" step="0.01" id="nue3" value="0">
-            </div>
-          </div>
+        <div class="stat-box">
+          <select id="statType3_nue" class="stat-select-nue-3"></select>
+          <input type="number" inputmode="decimal" step="0.01" class="stat-input new-value" id="nue3" value="26.26">
         </div>
 
-        <!-- Slot 4 -->
-        <div class="stat-row">
-          <div class="stat-row-title">SLOT 4</div>
-          <div class="input-group">
-            <select id="statType4">
-              <option value="dmgEsp" selected>Aumento del daño de los ataques especiales %</option>
-              <option value="dmgCrit">Daño crítico %</option>
-              <option value="atkFuego">Aumento del ataque de tipo fuego %</option>
-              <option value="dmgFuego">Aumento del daño de tipo fuego %</option>
-              <option value="dmgNorm">Aumento del daño de los ataques normales %</option>
-              <option value="probCrit">Probabilidad de crítico %</option>
-              <option value="cargaMagica">Eficacia de la carga mágica %</option>
-              <option value="rafagasFuego">Eficacia de las Ráfagas de fuego %</option>
-              <option value="dmgHabNorm">Aumento del daño de las habilidades normales %</option>
-              <option value="dmgHabRelevo">Aumento del daño de las habilidades de relevo %</option>
-              <option value="dmgDefinitivos">Aumento del daño de los movimientos definitivos %</option>
-            </select>
-          </div>
-          <div class="grid-2col">
-            <div>
-              <label>Actual %</label>
-              <input type="number" inputmode="decimal" step="0.01" id="act4" value="23.34">
-            </div>
-            <div>
-              <label>Nuevo %</label>
-              <input type="number" inputmode="decimal" step="0.01" id="nue4" value="25.82">
-            </div>
-          </div>
+        <div class="stat-box">
+          <select id="statType4_nue" class="stat-select-nue-4"></select>
+          <input type="number" inputmode="decimal" step="0.01" class="stat-input new-value" id="nue4" value="15.79">
         </div>
-
       </div>
 
-      <button type="button" class="btn-calc" onclick="calcularCP()">CALCULAR NUEVO PODER</button>
+    </div>
 
-      <div id="resultado" class="result-box">
-        <div id="tituloResultado" class="result-title"></div>
-        <div id="textoResultado" class="result-value"></div>
-      </div>
+    <button type="button" class="btn-calc" onclick="calcularCP()">CALCULAR NUEVO PODER</button>
 
-      <div class="footer">Hecho por <span>Crisvieri</span></div>
+    <div id="resultado" class="result-box">
+      <div id="tituloResultado" class="result-title"></div>
+      <div id="textoResultado" class="result-value"></div>
     </div>
   </div>
 
 <script>
-  function iniciarApp() {
-    document.getElementById('welcome-screen').style.display = 'none';
-    document.getElementById('app-screen').style.display = 'block';
-    document.body.classList.add('app-bg');
-  }
-
+  // PONDERACIÓN SOLAMENTE DE STATS CLAVE DE DAÑO / CP
   const pesosStats = {
-    atkFuego: 0.0035,
-    dmgFuego: 0.0032,
-    probCrit: 0.0028,
-    dmgCrit: 0.0025,
-    dmgEsp: 0.0022,
-    dmgNorm: 0.0020,
-    dmgHabNorm: 0.0020,
-    dmgHabRelevo: 0.0018,
-    dmgDefinitivos: 0.0024,
-    cargaMagica: 0.0015,
-    rafagasFuego: 0.0018,
-    cdr: 0.0015,
-    ps: 0.0012,
-    defensa: 0.0010,
-    resCrit: 0.0008,
-    defCrit: 0.0008
+    atkFuego: 0.0035,        // Ataque de tipo fuego %
+    dmgFuego: 0.0032,        // Daño de tipo fuego %
+    probCrit: 0.0028,        // Probabilidad de crítico %
+    dmgCrit: 0.0025,         // Daño crítico %
+    dmgDefinitivos: 0.0024,  // Daño de movimientos definitivos %
+    dmgEsp: 0.0022,          // Daño de ataques especiales %
+    cargaMagica: 0.0015,     // Eficacia de la carga mágica %
+    ninguno: 0
   };
+
+  const opcionesStats = [
+    { value: 'atkFuego', text: 'Ataque tipo fuego %' },
+    { value: 'dmgFuego', text: 'Daño tipo fuego %' },
+    { value: 'probCrit', text: 'Probabilidad de crítico %' },
+    { value: 'dmgCrit', text: 'Daño crítico %' },
+    { value: 'dmgDefinitivos', text: 'Mov. definitivos %' },
+    { value: 'dmgEsp', text: 'Ataques especiales %' },
+    { value: 'cargaMagica', text: 'Carga mágica %' },
+    { value: 'ninguno', text: '-- Ninguno --' }
+  ];
+
+  function poblarSelects() {
+    const selects = document.querySelectorAll('select');
+    selects.forEach(select => {
+      select.innerHTML = '';
+      opcionesStats.forEach(opt => {
+        const optionEl = document.createElement('option');
+        optionEl.value = opt.value;
+        optionEl.textContent = opt.text;
+        select.appendChild(optionEl);
+      });
+    });
+
+    // Valores por defecto acordes a tu captura de pantalla
+    document.getElementById('statType1_act').value = 'dmgFuego';
+    document.getElementById('statType2_act').value = 'atkFuego';
+    document.getElementById('statType3_act').value = 'cargaMagica';
+    document.getElementById('statType4_act').value = 'dmgEsp';
+
+    document.getElementById('statType1_nue').value = 'cargaMagica';
+    document.getElementById('statType2_nue').value = 'dmgDefinitivos';
+    document.getElementById('statType3_nue').value = 'atkFuego';
+    document.getElementById('statType4_nue').value = 'dmgCrit';
+  }
 
   function calcularCP() {
     const cpActual = parseFloat(document.getElementById('cpActual').value) || 0;
-    let cambioTotalPorcentual = 0;
+    
+    let puntosOrbeAnterior = 0;
+    let puntosOrbeNuevo = 0;
 
     for (let i = 1; i <= 4; i++) {
-      const type = document.getElementById(`statType${i}`).value;
+      const typeAct = document.getElementById(`statType${i}_act`).value;
       const actVal = parseFloat(document.getElementById(`act${i}`).value) || 0;
+      puntosOrbeAnterior += (actVal * (pesosStats[typeAct] || 0));
+
+      const typeNue = document.getElementById(`statType${i}_nue`).value;
       const nueVal = parseFloat(document.getElementById(`nue${i}`).value) || 0;
-      
-      const diff = nueVal - actVal;
-      const peso = pesosStats[type] || 0.0015;
-      
-      cambioTotalPorcentual += (diff * peso);
+      puntosOrbeNuevo += (nueVal * (pesosStats[typeNue] || 0));
     }
 
-    const incremento = Math.round(cpActual * cambioTotalPorcentual);
+    const cambioTotalPorcentual = puntosOrbeNuevo - puntosOrbeAnterior;
+    const incremento = Math.round(cpActual * (cambioTotalPorcentual / 100));
     const nuevoCP = cpActual + incremento;
 
     const resBox = document.getElementById('resultado');
@@ -430,33 +283,24 @@
     resBox.style.display = 'block';
     
     if (incremento >= 0) {
-      resBox.style.backgroundColor = '#1b3823';
+      resBox.style.backgroundColor = '#112919';
       resBox.style.border = '1px solid #2e6d3e';
       resTitle.style.color = '#4caf50';
-      resTitle.innerText = '✓ ¡TIRADA POSITIVA!';
+      resTitle.innerText = '✓ ¡APLICAR (TIRADA POSITIVA)!';
       resText.style.color = '#81c784';
       resText.innerHTML = `Nuevo CP Estimado: ${nuevoCP.toLocaleString()}<br>(+${incremento.toLocaleString()})`;
     } else {
-      resBox.style.backgroundColor = '#381b1b';
+      resBox.style.backgroundColor = '#2d1414';
       resBox.style.border = '1px solid #6d2e2e';
       resTitle.style.color = '#e57373';
-      resTitle.innerText = '✕ ¡TIRADA NEGATIVA!';
+      resTitle.innerText = '✕ ¡MANTENER (TIRADA NEGATIVA)!';
       resText.style.color = '#ef9a9a';
       resText.innerHTML = `Nuevo CP Estimado: ${nuevoCP.toLocaleString()}<br>(${incremento.toLocaleString()})`;
     }
   }
 
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' || e.keyCode === 13) {
-      e.preventDefault();
-      const welcomeScreen = document.getElementById('welcome-screen');
-      if (welcomeScreen.style.display !== 'none') {
-        iniciarApp();
-      } else {
-        calcularCP();
-      }
-    }
-  });
+  // Cargar lista filtrada al iniciar
+  poblarSelects();
 </script>
 
 </body>
