@@ -475,8 +475,8 @@
 
         <div class="action-buttons">
           <button type="button" class="btn-reset" onclick="reproducirClick(); copiarActualParaNuevo()">Copiar Actual</button>
-          <button type="button" class="btn-calc" onclick="reproducirCruelSun(); calcular()">Evaluar Sol</button>
-          <button type="button" id="btnAplicar" class="btn-apply" onclick="reproducirExito(); mantenerYCambiar()">✓ Mantener</button>
+          <button type="button" class="btn-calc" onclick="reproducirCruelSunEpico(); calcular()">Evaluar Sol</button>
+          <button type="button" id="btnAplicar" class="btn-apply" onclick="reproducirExitoEpico(); mantenerYCambiar()">✓ Mantener</button>
         </div>
 
         <div id="resultado" class="result-box">
@@ -497,88 +497,114 @@
     if (!audioCtx) {
       audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
   }
 
-  // EFECTO "CRUEL SUN" / PODER DE ESCANOR (Zumbido de plasma solar + explosión de energía)
-  function reproducirCruelSun() {
+  // SONIDO ÉPICO 1: "CRUEL SUN" / EXPLOSIÓN SOLAR (Sub-bass potente + Arpegio rápido de energía)
+  function reproducirCruelSunEpico() {
     initAudio();
     if (!audioCtx) return;
     
     let now = audioCtx.currentTime;
 
-    // 1. Zumbido grave de energía acumulada (Sunshine Aura)
-    let osc1 = audioCtx.createOscillator();
-    let gain1 = audioCtx.createGain();
-    osc1.type = 'sawtooth';
-    osc1.frequency.setValueAtTime(80, now);
-    osc1.frequency.exponentialRampToValueAtTime(320, now + 0.5);
+    // 1. Golpe de impacto grave (Sub-bass boom) tipo videojuego de acción
+    let subOsc = audioCtx.createOscillator();
+    let subGain = audioCtx.createGain();
+    subOsc.type = 'triangle';
+    subOsc.frequency.setValueAtTime(150, now);
+    subOsc.frequency.exponentialRampToValueAtTime(30, now + 0.4);
 
-    gain1.gain.setValueAtTime(0.2, now);
-    gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+    subGain.gain.setValueAtTime(0.4, now);
+    subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
 
-    osc1.connect(gain1);
-    gain1.connect(audioCtx.destination);
-    osc1.start(now);
-    osc1.stop(now + 0.6);
+    subOsc.connect(subGain);
+    subGain.connect(audioCtx.destination);
+    subOsc.start(now);
+    subOsc.stop(now + 0.45);
 
-    // 2. Destello agudo simulando calor extremo
-    let osc2 = audioCtx.createOscillator();
-    let gain2 = audioCtx.createGain();
-    osc2.type = 'sine';
-    osc2.frequency.setValueAtTime(440, now + 0.2);
-    osc2.frequency.exponentialRampToValueAtTime(1200, now + 0.5);
+    // 2. Ráfaga de energía en aumento (Arpegio rápido estilo láser / plasma mágico)
+    const notas = [220, 277.18, 329.63, 440, 554.37, 659.25, 880];
+    notas.forEach((freq, index) => {
+      let osc = audioCtx.createOscillator();
+      let gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      
+      let startTime = now + (index * 0.05);
+      osc.frequency.setValueAtTime(freq, startTime);
+      
+      gain.gain.setValueAtTime(0.12, startTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.15);
 
-    gain2.gain.setValueAtTime(0.1, now + 0.2);
-    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
+      // Filtro para dar brillo metálico/mágico
+      let filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(2500, startTime);
 
-    osc2.connect(gain2);
-    gain2.connect(audioCtx.destination);
-    osc2.start(now + 0.2);
-    osc2.stop(now + 0.55);
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      osc.start(startTime);
+      osc.stop(startTime + 0.15);
+    });
   }
 
+  // SONIDO SECUNDARIO: Clic de interfaz ágil
   function reproducirClick() {
     initAudio();
     if (!audioCtx) return;
     
     let osc = audioCtx.createOscillator();
     let gain = audioCtx.createGain();
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(300, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.06);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.05);
     
-    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.06);
+    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
     
     osc.connect(gain);
     gain.connect(audioCtx.destination);
     osc.start();
-    osc.stop(audioCtx.currentTime + 0.06);
+    osc.stop(audioCtx.currentTime + 0.05);
   }
 
-  function reproducirExito() {
+  // SONIDO ÉPICO 2: Fanfarria de Éxito / Victoria Triunfal
+  function reproducirExitoEpico() {
     initAudio();
     if (!audioCtx) return;
     
-    // Fanfarria triunfal corta del León del Orgullo
-    [392.00, 523.25, 659.25, 783.99].forEach((freq, index) => {
-      let osc = audioCtx.createOscillator();
-      let gain = audioCtx.createGain();
-      osc.type = 'square';
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + (index * 0.07));
-      
-      gain.gain.setValueAtTime(0.1, audioCtx.currentTime + (index * 0.07));
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + (index * 0.07 + 0.25));
-      
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start(audioCtx.currentTime + (index * 0.07));
-      osc.stop(audioCtx.currentTime + (index * 0.07) + 0.25);
+    // Acordes de victoria enérgicos (Escala mayor heroica)
+    const acordes = [
+      { time: 0.0, freqs: [261.63, 329.63, 392.00] }, // C major
+      { time: 0.12, freqs: [329.63, 392.00, 523.25] }, // E major / C high
+      { time: 0.24, freqs: [392.00, 523.25, 659.25, 783.99] } // G major climax
+    ];
+
+    acordes.forEach(block => {
+      block.freqs.forEach(freq => {
+        let osc = audioCtx.createOscillator();
+        let gain = audioCtx.createGain();
+        osc.type = 'square';
+        
+        let startTime = audioCtx.currentTime + block.time;
+        osc.frequency.setValueAtTime(freq, startTime);
+        
+        gain.gain.setValueAtTime(0.08, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.35);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(startTime);
+        osc.stop(startTime + 0.35);
+      });
     });
   }
 
   function entrarApp() {
-    reproducirCruelSun();
+    reproducirCruelSunEpico();
     const splash = document.getElementById('splashScreen');
     const mainApp = document.getElementById('mainApp');
     
