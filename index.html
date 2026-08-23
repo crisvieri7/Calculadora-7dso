@@ -49,13 +49,22 @@
 
     .splash-image-container {
       width: 100%;
-      max-width: 280px;
-      height: 340px;
+      max-width: 260px;
+      height: 380px;
       border-radius: 12px;
       border: 2px solid #ff9800;
       box-shadow: 0 0 25px rgba(255, 152, 0, 0.4);
       overflow: hidden;
-      background: #281a08 url('IMG_2253.jpeg') center top / cover no-repeat;
+      background: #12151c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .splash-image-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* Esto asegura que se vea toda la imagen completa sin recortar nada */
     }
 
     .btn-enter {
@@ -135,13 +144,23 @@
     }
     .hero-avatar {
       width: 65px;
-      height: 80px;
+      height: 85px;
       border-radius: 10px;
       border: 2px solid #ff9800;
-      background: #281a08 url('IMG_2253.jpeg') center top / cover no-repeat;
+      background: #12151c;
       box-shadow: 0 0 10px rgba(255, 152, 0, 0.4);
       flex-shrink: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+    .hero-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Aquí en miniatura sí luce bien en 'cover' para llenar el espacio */
+    }
+
     .hero-base-stats {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -292,7 +311,9 @@
     <!-- PANTALLA DE BIENVENIDA -->
     <div id="splashScreen">
       <div class="splash-title">🔥 Calculadora Escanor 7DS</div>
-      <div class="splash-image-container"></div>
+      <div class="splash-image-container">
+        <img src="IMG_2253.jpeg" alt="Escanor Completo">
+      </div>
       <button type="button" class="btn-enter" onclick="entrarApp()">ENTRAR</button>
     </div>
 
@@ -308,7 +329,9 @@
           </div>
         </div>
         <div class="hero-profile">
-          <div class="hero-avatar" id="avatarPreview"></div>
+          <div class="hero-avatar" id="avatarPreview">
+            <img src="IMG_2253.jpeg" alt="Avatar Escanor">
+          </div>
           <div class="hero-base-stats">
             <div class="stat-pill">
               <label>Atq. Fuego %</label>
