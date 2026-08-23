@@ -1,60 +1,45 @@
-  function procesarCapturaStats(event) {
-    const file = event.target.files[0];
-    if (!file) return;
+    /* PANTALLA DE BIENVENIDA MEJORADA */
+    #splashScreen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 16px;
+      padding: 20px;
+      background: rgba(16, 18, 26, 0.95);
+      border: 1px solid rgba(255, 152, 0, 0.4);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
 
-    const loadingText = document.getElementById('loadingText');
-    loadingText.style.display = 'block';
+    .splash-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #ffb74d;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
 
-    Tesseract.recognize(file, 'eng+spa', { 
-      logger: m => console.log(m) 
-    }).then(({ data: { text } }) => {
-      loadingText.style.display = 'none';
-      
-      console.log("Texto leído por OCR:", text); // Para depurar en consola si lo necesitas
+    /* Imagen grande y completa, rectangular vertical tipo banner */
+    .splash-image-container {
+      width: 100%;
+      max-width: 280px;
+      height: 340px;
+      border-radius: 12px;
+      border: 2px solid #ff9800;
+      box-shadow: 0 0 25px rgba(255, 152, 0, 0.4);
+      overflow: hidden;
+      background: #281a08 url('IMG_2253.jpeg') center top / cover no-repeat;
+    }
 
-      const lineas = text.split('\n').filter(l => l.trim().length > 0);
-      let statIndex = 1;
-
-      lineas.forEach(linea => {
-        if (statIndex > 4) return;
-        
-        // Buscamos cualquier secuencia de dígitos o números con puntos/comas
-        const numsMatch = linea.match(/\d+([.,]\d+)?/g);
-        if (numsMatch && numsMatch.length > 0) {
-          let valorStr = numsMatch[0].replace(',', '.');
-          let valorNum = parseFloat(valorStr);
-
-          // Corrección clave: si Tesseract leyó un número entero sin punto (ej: 1353 o 3376)
-          if (!valorStr.includes('.') && valorNum > 99) {
-            valorNum = valorNum / 100;
-          }
-
-          // Limitamos a máximo 2 decimales para que coincida con el juego
-          valorNum = Math.round(valorNum * 100) / 100;
-
-          const tipoDetectado = detectarTipoStat(linea);
-
-          // Asignamos al campo Actual
-          document.getElementById(`act${statIndex}`).value = valorNum;
-
-          if (tipoDetectado) {
-            document.getElementById(`s${statIndex}_act`).value = tipoDetectado;
-          }
-
-          statIndex++;
-        }
-      });
-
-      actualizarPorcentajes();
-
-      if (statIndex > 1) {
-        alert("¡Captura analizada y corregida con éxito! Revisa los valores cargados.");
-      } else {
-        alert("No se pudieron extraer datos legibles. Intenta con una imagen más recortada o clara.");
-      }
-    }).catch(err => {
-      loadingText.style.display = 'none';
-      console.error(err);
-      alert("Error al procesar la imagen.");
-    });
-  }
+    /* Avatar del perfil principal también ajustado para que se vea mejor */
+    .hero-avatar {
+      width: 65px;
+      height: 80px;
+      border-radius: 10px;
+      border: 2px solid #ff9800;
+      background: #281a08 url('IMG_2253.jpeg') center top / cover no-repeat;
+      box-shadow: 0 0 10px rgba(255, 152, 0, 0.4);
+      flex-shrink: 0;
+    }
