@@ -33,8 +33,8 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      gap: 20px;
-      padding: 20px;
+      gap: 24px;
+      padding: 24px;
       background: rgba(16, 18, 26, 0.95);
       border: 1px solid rgba(255, 152, 0, 0.3);
       border-radius: 16px;
@@ -43,20 +43,21 @@
     }
 
     .splash-title {
-      font-size: 1.3rem;
+      font-size: 1.4rem;
       font-weight: 800;
       color: #ffb74d;
       text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     }
 
+    /* Imagen principal de bienvenida más grande y mejor centrada */
     .splash-image-container {
-      width: 180px;
-      height: 180px;
+      width: 220px;
+      height: 220px;
       border-radius: 50%;
-      border: 3px solid #ff9800;
-      box-shadow: 0 0 20px rgba(255, 152, 0, 0.5);
+      border: 4px solid #ff9800;
+      box-shadow: 0 0 25px rgba(255, 152, 0, 0.6);
       overflow: hidden;
-      background: #281a08 url('IMG_2253.jpeg') center 20% / cover no-repeat;
+      background: #281a08 url('IMG_2253.jpeg') center 10% / 130% no-repeat;
     }
 
     .btn-enter {
@@ -139,7 +140,7 @@
       height: 70px;
       border-radius: 50%;
       border: 2px solid #ff9800;
-      background: #281a08 url('IMG_2253.jpeg') center 20% / cover no-repeat;
+      background: #281a08 url('IMG_2253.jpeg') center 15% / 130% no-repeat;
       box-shadow: 0 0 10px rgba(255, 152, 0, 0.4);
       flex-shrink: 0;
     }
@@ -348,9 +349,9 @@
         </div>
 
         <div class="upload-section">
-          <label for="fileInput" class="btn-upload">📷 Subir captura para autocompletar stats</label>
+          <label for="fileInput" class="btn-upload">📷 Subir captura de orbe (Autodetecta Tipo y Valor)</label>
           <input type="file" id="fileInput" accept="image/*" onchange="procesarCapturaStats(event)">
-          <div id="loadingText">Leyendo captura de pantalla... Por favor espera 🔍</div>
+          <div id="loadingText">Leyendo stats y tipos de la orbe... Por favor espera 🔍</div>
         </div>
 
         <div class="creator-credit">Made by Christenzen</div>
@@ -452,6 +453,18 @@
     document.getElementById('s4_nue').value = 'dmgEspecial';
   }
 
+  function detectarTipoStat(lineaTexto) {
+    const t = lineaTexto.toLowerCase();
+    if (t.includes('crit') && (t.includes('dmg') || t.includes('daño') || t.includes('damage'))) return 'dmgCrit';
+    if (t.includes('crit') && (t.includes('prob') || t.includes('rate'))) return 'probCrit';
+    if (t.includes('fuego') && (t.includes('atk') || t.includes('ataque'))) return 'atkFuego';
+    if (t.includes('fuego') && (t.includes('dmg') || t.includes('daño'))) return 'dmgFuego';
+    if (t.includes('especial') || t.includes('special')) return 'dmgEspecial';
+    if (t.includes('definitiva') || t.includes('ultimate')) return 'dmgDef';
+    if (t.includes('magica') || t.includes('magic') || t.includes('carga')) return 'cargaMagica';
+    return null;
+  }
+
   function procesarCapturaStats(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -459,29 +472,39 @@
     const loadingText = document.getElementById('loadingText');
     loadingText.style.display = 'block';
 
-    Tesseract.recognize(file, 'eng', { logger: m => console.log(m) }).then(({ data: { text } }) => {
+    Tesseract.recognize(file, 'eng+spa', { logger: m => console.log(m) }).then(({ data: { text } }) => {
       loadingText.style.display = 'none';
-      const numerosEncontrados = text.match(/\d+([.,]\d+)?/g);
+      
+      const lineas = text.split('\n').filter(l => l.trim().length > 0);
+      let statIndex = 1;
 
-      if (numerosEncontrados && numerosEncontrados.length > 0) {
-        const nums = numerosEncontrados.map(n => parseFloat(n.replace(',', '.')));
-        if (nums.length >= 1 && nums[0] > 1000) {
-          document.getElementById('baseCP').value = nums[0];
-          nums.shift();
+      lineas.forEach(linea => {
+        if (statIndex > 4) return;
+        
+        const numsMatch = linea.match(/\d+([.,]\d+)?/g);
+        if (numsMatch && numsMatch.length > 0) {
+          const valorNum = parseFloat(numsMatch[0].replace(',', '.'));
+          const tipoDetectado = detectarTipoStat(linea);
+
+          document.getElementById(`act${statIndex}`).value = valorNum;
+
+          if (tipoDetectado) {
+            document.getElementById(`s${statIndex}_act`).value = tipoDetectado;
+          }
+
+          statIndex++;
         }
-        if (nums[0] !== undefined) document.getElementById('baseAtqFuego').value = nums[0];
-        if (nums[1] !== undefined) document.getElementById('baseDmgFuego').value = nums[1];
-        if (nums[2] !== undefined) document.getElementById('baseProbCrit').value = nums[2];
-        if (nums[3] !== undefined) document.getElementById('baseDmgCrit').value = nums[3];
+      });
 
-        alert("¡Stats base leídas y actualizadas con éxito!");
+      if (statIndex > 1) {
+        alert("¡Captura de orbe analizada! Se ajustaron los tipos y valores del Roll Actual.");
       } else {
-        alert("No se pudieron leer números claros. Intenta con otra imagen.");
+        alert("No se pudieron extraer datos legibles. Intenta con una imagen más clara.");
       }
     }).catch(err => {
       loadingText.style.display = 'none';
       console.error(err);
-      alert("Error al procesar la imagen.");
+      alert("Error al procesar la imagen de la orbe.");
     });
   }
 
