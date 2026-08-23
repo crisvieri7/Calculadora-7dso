@@ -3,53 +3,163 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora de Encantamiento Avanzada - Escanor</title>
+  <title>Escanor - Calculadora & Evaluación de Encantamientos</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background-color: #0b0d12;
+      background: radial-gradient(circle at top, #1a0f2e 0%, #08090d 100%);
       color: #ffffff;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 12px;
+      padding: 16px;
+      overflow-x: hidden;
     }
-    .game-card {
-      background: rgba(16, 18, 26, 0.98);
-      border: 1px solid rgba(230, 81, 0, 0.3);
-      border-radius: 14px;
-      padding: 18px 14px;
+
+    /* CONTENEDOR GENERAL */
+    .app-container {
       width: 100%;
-      max-width: 500px;
+      max-width: 480px;
+      position: relative;
+    }
+
+    /* PANTALLA 1: BIENVENIDA / SPLASH (IMAGEN CENTRADA + BOTÓN ENTER) */
+    #splashScreen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 20px;
+      padding: 20px;
+      background: rgba(16, 18, 26, 0.95);
+      border: 1px solid rgba(255, 152, 0, 0.3);
+      border-radius: 16px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
+      transition: opacity 0.4s ease, transform 0.4s ease;
     }
-    .game-title {
-      text-align: center;
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: #ff9800;
+
+    .splash-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #ffb74d;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     }
-    .game-subtitle {
-      text-align: center;
-      font-size: 0.75rem;
-      color: #8c93a8;
+
+    .splash-image-container {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      border: 3px solid #ff9800;
+      box-shadow: 0 0 20px rgba(255, 152, 0, 0.5);
+      overflow: hidden;
+      background: #281a08;
+    }
+
+    .splash-image-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .btn-enter {
+      background: linear-gradient(135deg, #ff9800 0%, #e65100 100%);
+      color: white;
+      border: none;
+      padding: 12px 36px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(230, 81, 0, 0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-enter:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(230, 81, 0, 0.6);
+    }
+
+    /* PANTALLA 2: LA APLICACIÓN PRINCIPAL (OCULTA AL INICIO) */
+    #mainApp {
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* TARJETA DE PERFIL DE HÉROE */
+    .hero-card {
+      background: rgba(16, 18, 26, 0.95);
+      border: 1px solid rgba(255, 152, 0, 0.3);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    }
+    .hero-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 8px;
       margin-bottom: 12px;
     }
-    .stat-summary {
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 8px;
-      padding: 8px 12px;
-      margin-bottom: 12px;
+    .hero-title { font-size: 1.1rem; font-weight: 800; color: #ffb74d; }
+    .hero-cp { font-size: 0.85rem; color: #8c93a8; font-weight: bold; }
+    .hero-cp span { color: #fff; font-size: 1.05rem; }
+
+    .hero-profile {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .hero-avatar {
+      width: 75px;
+      height: 75px;
+      border-radius: 50%;
+      border: 2px solid #ff9800;
+      background: #281a08 url('IMG_2253.jpeg') center/cover no-repeat;
+      box-shadow: 0 0 10px rgba(255, 152, 0, 0.4);
+      flex-shrink: 0;
+    }
+    .hero-base-stats {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 6px;
+      width: 100%;
       font-size: 0.72rem;
-      color: #b0b6c6;
     }
-    .stat-summary span { color: #ffb74d; font-weight: bold; }
+    .stat-pill {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .stat-pill label { display: block; color: #8c93a8; font-size: 0.65rem; }
+    .stat-pill val { font-weight: bold; color: #ffcc80; }
+
+    /* TARJETA DE EVALUACIÓN DE ENCANTAMIENTO */
+    .calc-card {
+      background: rgba(16, 18, 26, 0.95);
+      border: 1px solid rgba(230, 81, 0, 0.3);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
+    }
+    .section-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #ff9800;
+      text-align: center;
+      margin-bottom: 12px;
+    }
     .comparison-container {
       display: grid;
       grid-template-columns: 1fr 16px 1fr;
@@ -103,7 +213,7 @@
       color: white;
       border: none;
       padding: 12px;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: bold;
       border-radius: 6px;
       cursor: pointer;
@@ -133,62 +243,99 @@
 </head>
 <body>
 
-  <div class="game-card">
-    <div class="game-title">Encantamiento: Hacha de Escanor</div>
-    <div class="game-subtitle">Optimizador de Daño / Evaluador de Tiradas</div>
-
-    <!-- Perfil Actual -->
-    <div class="stat-summary">
-      <div>Prob. Crít: <span>33.76%</span></div>
-      <div>Daño Crít: <span>113.51%</span></div>
-      <div>Atq Fuego %: <span>99.08%</span></div>
-      <div>Daño Fuego %: <span>13.53%</span></div>
+  <div class="app-container">
+    
+    <!-- ================= PANTALLA 1: BIENVENIDA / ENTER ================= -->
+    <div id="splashScreen">
+      <div class="splash-title">🔥 Calculadora Escanor 7DS</div>
+      <div class="splash-image-container">
+        <img src="IMG_2253.jpeg" alt="Escanor Preview">
+      </div>
+      <button type="button" class="btn-enter" onclick="entrarApp()">ENTER</button>
     </div>
 
-    <div class="comparison-container">
-      <!-- ACTUAL -->
-      <div class="column-panel">
-        <div class="panel-title act">Hacha Actual</div>
-        <div class="stat-box"><select id="s1_act"></select><input type="number" step="0.01" class="stat-input" id="act1" value="13.53"></div>
-        <div class="stat-box"><select id="s2_act"></select><input type="number" step="0.01" class="stat-input" id="act2" value="33.76"></div>
-        <div class="stat-box"><select id="s3_act"></select><input type="number" step="0.01" class="stat-input" id="act3" value="8.95"></div>
-        <div class="stat-box"><select id="s4_act"></select><input type="number" step="0.01" class="stat-input" id="act4" value="23.34"></div>
+    <!-- ================= PANTALLA 2: APLICACIÓN PRINCIPAL ================= -->
+    <div id="mainApp">
+      
+      <!-- Tarjeta de Perfil de Héroe -->
+      <div class="hero-card">
+        <div class="hero-header">
+          <div class="hero-title">Escanor (Rango IV)</div>
+          <div class="hero-cp">Poder: <span>37,188</span></div>
+        </div>
+        <div class="hero-profile">
+          <div class="hero-avatar"></div>
+          <div class="hero-base-stats">
+            <div class="stat-pill"><label>Atq Fuego %</label><val>99.08%</val></div>
+            <div class="stat-pill"><label>Daño Fuego %</label><val>13.53%</val></div>
+            <div class="stat-pill"><label>Prob. Crítica</label><val>33.76%</val></div>
+            <div class="stat-pill"><label>Daño Crítico</label><val>113.51%</val></div>
+          </div>
+        </div>
       </div>
 
-      <div class="center-divider">➔</div>
+      <!-- Tarjeta Evaluador de Encantamientos -->
+      <div class="calc-card">
+        <div class="section-title">Evaluador de Encantamiento (Hacha)</div>
 
-      <!-- NUEVO -->
-      <div class="column-panel">
-        <div class="panel-title nue">Nuevo Intento</div>
-        <div class="stat-box"><select id="s1_nue"></select><input type="number" step="0.01" class="stat-input new-value" id="nue1" value="13.53"></div>
-        <div class="stat-box"><select id="s2_nue"></select><input type="number" step="0.01" class="stat-input new-value" id="nue2" value="33.76"></div>
-        <div class="stat-box"><select id="s3_nue"></select><input type="number" step="0.01" class="stat-input new-value" id="nue3" value="12.00"></div>
-        <div class="stat-box"><select id="s4_nue"></select><input type="number" step="0.01" class="stat-input new-value" id="nue4" value="23.34"></div>
+        <div class="comparison-container">
+          <!-- ACTUAL -->
+          <div class="column-panel">
+            <div class="panel-title act">Hacha Actual</div>
+            <div class="stat-box"><select id="s1_act"></select><input type="number" step="0.01" class="stat-input" id="act1" value="13.53"></div>
+            <div class="stat-box"><select id="s2_act"></select><input type="number" step="0.01" class="stat-input" id="act2" value="33.76"></div>
+            <div class="stat-box"><select id="s3_act"></select><input type="number" step="0.01" class="stat-input" id="act3" value="8.95"></div>
+            <div class="stat-box"><select id="s4_act"></select><input type="number" step="0.01" class="stat-input" id="act4" value="23.34"></div>
+          </div>
+
+          <div class="center-divider">➔</div>
+
+          <!-- NUEVO -->
+          <div class="column-panel">
+            <div class="panel-title nue">Nuevo Intento</div>
+            <div class="stat-box"><select id="s1_nue"></select><input type="number" step="0.01" class="stat-input new-value" id="nue1" value="13.53"></div>
+            <div class="stat-box"><select id="s2_nue"></select><input type="number" step="0.01" class="stat-input new-value" id="nue2" value="33.76"></div>
+            <div class="stat-box"><select id="s3_nue"></select><input type="number" step="0.01" class="stat-input new-value" id="nue3" value="12.00"></div>
+            <div class="stat-box"><select id="s4_nue"></select><input type="number" step="0.01" class="stat-input new-value" id="nue4" value="23.34"></div>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button type="button" class="btn-reset" onclick="copiarActual()">Copiar Actual</button>
+          <button type="button" class="btn-calc" onclick="calcular()">Evaluar Tirada</button>
+        </div>
+
+        <div id="resultado" class="result-box">
+          <div id="tituloResultado" class="result-title"></div>
+          <div id="textoResultado" class="result-value"></div>
+          <div id="notaEscanor" class="escanor-note"></div>
+        </div>
       </div>
+
     </div>
 
-    <div class="action-buttons">
-      <button type="button" class="btn-reset" onclick="copiarActual()">Copiar Actual</button>
-      <button type="button" class="btn-calc" onclick="calcular()">Evaluar Tirada</button>
-    </div>
-
-    <div id="resultado" class="result-box">
-      <div id="tituloResultado" class="result-title"></div>
-      <div id="textoResultado" class="result-value"></div>
-      <div id="notaEscanor" class="escanor-note"></div>
-    </div>
   </div>
 
 <script>
-  // Pesos calibrados con la fórmula real de daño
+  function entrarApp() {
+    const splash = document.getElementById('splashScreen');
+    const mainApp = document.getElementById('mainApp');
+    
+    splash.style.opacity = '0';
+    setTimeout(() => {
+      splash.style.display = 'none';
+      mainApp.style.display = 'flex';
+    }, 400);
+  }
+
   const pesosStats = {
-    dmgFuego: 1.10,     // Aumento del daño de tipo fuego (Alta prioridad por bajo % actual)
-    probCrit: 1.05,     // Probabilidad de crítico (Alta prioridad para estabilizar el 113% de daño crít)
-    dmgCrit: 0.90,      // Daño crítico %
-    atkFuego: 0.80,     // Aumento del ataque de tipo fuego (Suavizado por estar cerca de 100%)
-    dmgEspecial: 0.85, // Aumento daño ataques especiales
-    dmgDef: 0.75,      // Aumento daño mov. definitivos
-    cargaMagica: 0.20  // Eficacia de la carga mágica
+    dmgFuego: 1.10,
+    probCrit: 1.05,
+    dmgCrit: 0.90,
+    atkFuego: 0.80,
+    dmgEspecial: 0.85,
+    dmgDef: 0.75,
+    cargaMagica: 0.20
   };
 
   const opciones = [
@@ -220,7 +367,7 @@
 
     document.getElementById('s1_nue').value = 'dmgFuego';
     document.getElementById('s2_nue').value = 'atkFuego';
-    document.getElementById('s3_nue').value = 'probCrit'; // Sugerencia inicial
+    document.getElementById('s3_nue').value = 'probCrit';
     document.getElementById('s4_nue').value = 'dmgEspecial';
   }
 
